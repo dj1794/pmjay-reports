@@ -28,10 +28,13 @@
                     <textarea class="form-control" rows="1" @bind="Search"></textarea>
                 </div>
 
-                <div class="col-md-2">
+                <!-- Block -->
+                <div class="col-md-3">
                     <label class="form-label">Block</label>
-                    <select class="form-select" @bind="Block">
-                        <option value="">All</option>
+                    <select class="form-select"
+                            @bind="Block"
+                            @bind:event="onchange">
+                        <option value="">-- Select Block --</option>
                         @foreach (var b in Blocks)
                         {
                             <option value="@b">@b</option>
@@ -39,14 +42,22 @@
                     </select>
                 </div>
 
-                <div class="col-md-2">
-                    <label class="form-label">Village / Ward</label>
-                    <select class="form-select" @bind="Village">
-                        <option value="">All</option>
-                        <option value="VILLAGE1">VILLAGE1</option>
-                        <option value="VILLAGE2">VILLAGE2</option>
-                    </select>
+                <!-- Village Text Search -->
+                <div class="col-md-3">
+                    <label class="form-label">Village (Search)</label>
+                    <input class="form-control"
+                           placeholder="Type village name"
+                           @bind="Village"
+                           @bind:event="oninput"
+                           disabled="@string.IsNullOrWhiteSpace(Block)" />
+                    @if (!string.IsNullOrWhiteSpace(Village) && Village.Length < 3)
+                    {
+                        <small class="text-danger">
+                            Minimum 3 characters required
+                        </small>
+                    }
                 </div>
+
 
                 <div class="col-md-2">
                     <label class="form-label">Rural / Urban</label>
@@ -89,10 +100,12 @@
                     </select>
                 </div>
 
-                <div class="col-md-3 d-flex align-items-end gap-2">
+                <!-- Apply -->
+                <div class="col-md-2 align-self-end">
                     <button class="btn btn-primary w-100"
-                            @onclick="ApplyFiltersClicked">
-                        Apply Filters
+                            @onclick="ApplyFiltersClicked"
+                            disabled="@IsApplyDisabled">
+                        Apply Filter
                     </button>
                 </div>
 
@@ -271,6 +284,9 @@
 
     // debug message to verify handler runs
     string LastAction { get; set; } = string.Empty;
+    bool IsApplyDisabled =>
+    string.IsNullOrWhiteSpace(Block) ||
+    (!string.IsNullOrWhiteSpace(Village) && Village.Length < 3);
 
     protected override async Task OnInitializedAsync()
     {

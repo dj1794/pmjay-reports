@@ -115,8 +115,8 @@ public class AgraDataService
         {
             var v = village.Trim();
             q = q.Where(a =>
-                a.village_ward_lgd_code != null &&
-                EF.Functions.Like(a.village_ward_lgd_code, $"%{v}%"));
+                a.source_address != null &&
+                EF.Functions.Like(a.source_address, $"%{v}%"));
         }
 
         if (!string.IsNullOrWhiteSpace(ru))
