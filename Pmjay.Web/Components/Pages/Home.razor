@@ -1,0 +1,451 @@
+﻿@page "/"
+@using Microsoft.JSInterop
+@using Pmjay.Api.Data
+@using Pmjay.Web.ApiClients
+@inject HomeApiClient Api
+@inject IJSRuntime JS
+
+
+<div class="container-fluid my-3">
+    <div class="d-flex align-items-center gap-3">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" height="60">
+        <img src="https://mera.pmjay.gov.in/images/logo.png" height="60">
+    </div>
+
+    <h3 class="text-center mt-3">Ayushman Bharat – PMJAY Data</h3>
+    <h6 class="text-center text-muted">District Agra</h6>
+</div>
+
+
+<!-- FILTERS -->
+<div class="container-fluid">
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <label class="form-label">Search</label>
+                    <textarea class="form-control" rows="1" @bind="Search"></textarea>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Block</label>
+                    <select class="form-select" @bind="Block">
+                        <option value="">All</option>
+                        @foreach (var b in Blocks)
+                        {
+                            <option value="@b">@b</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Village / Ward</label>
+                    <select class="form-select" @bind="Village">
+                        <option value="">All</option>
+                        <option value="VILLAGE1">VILLAGE1</option>
+                        <option value="VILLAGE2">VILLAGE2</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Rural / Urban</label>
+                    <select class="form-select" @bind="RU">
+                        <option value="">All</option>
+                        <option value="RURAL">RURAL</option>
+                        <option value="URBAN">URBAN</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Source Type</label>
+                    <select class="form-select" @bind="Source">
+                        <option value="">All</option>
+                        <option value="SECC">SECC</option>
+                        <option value="TPHH">TPHH</option>
+                        <option value="MMJAA">MMJAA</option>
+                        <option value="STPHH">STPHH</option>
+                        <option value="BOCW">BOCW</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Member Status</label>
+                    <select class="form-select" @bind="MemberStatus">
+                        <option value="">All</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Disabled">Disabled</option>
+                        <option value="Applied">Applied</option>
+                        <option value="KYC needed">KYC needed</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Family Status</label>
+                    <select class="form-select" @bind="FamilyStatus">
+                        <option value="">All</option>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end gap-2">
+                    <button class="btn btn-primary w-100"
+                            @onclick="ApplyFiltersClicked">
+                        Apply Filters
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mb-3">
+    <div class="row g-3 text-center">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <small>Total Families</small>
+                    <h5>@Summary.TotalFamilies</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <small>Total Members</small>
+                    <h5>@Summary.TotalMembers</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <small>Covered Members</small>
+                    <h5>@Summary.CoveredMembers</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <small>Covered Families</small>
+                    <h5>@Summary.CoveredFamilies</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="actions">
+    <button type="button" class="download" @onclick="ExportCsv">Download Excel</button>
+    <button type="button" class="print" @onclick="Print">Print</button>
+</div>
+
+@if (IsLoading)
+{
+    <div class="position-fixed top-0 start-0 w-100 h-100
+                    d-flex align-items-center justify-content-center
+                    bg-dark bg-opacity-50"
+         style="z-index:1055;">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body table-responsive">
+
+            <table class="table table-bordered table-striped table-sm">
+                <thead class="table-primary">
+                    <tr>
+                        @foreach (var h in Headers)
+                        {
+                            <th>@h</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in DisplayRows)
+                    {
+                        <tr>
+                            @foreach (var h in Headers)
+                            {
+                                <td>@(GetValue(r, h) ?? "")</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center gap-2 my-3">
+    <button class="btn btn-outline-secondary" @onclick="First">First</button>
+    <button class="btn btn-outline-secondary" @onclick="Prev">Prev</button>
+    <span class="align-self-center">
+        Page @CurrentPage of @TotalPages
+    </span>
+    <button class="btn btn-outline-secondary" @onclick="Next">Next</button>
+    <button class="btn btn-outline-secondary" @onclick="Last">Last</button>
+</div>
+
+
+@code {
+    readonly List<string> Blocks = new()
+ {
+ "ACHHNERA",
+ "AKOLA",
+ "BAH",
+ "BARAULI AHIR",
+ "BICHPURI",
+ "ETMADPUR",
+ "FATEHABAD",
+ "FATEHPUR SIKRI",
+ "JAGNER",
+ "JAITPUR KALAN",
+ "KHANDAULI",
+ "KHERAGARH",
+ "PINAHAT",
+ "SAIYAN",
+ "SHAMSABAD",
+ "M.cCORP"
+ };
+
+    List<string> Headers = new()
+ {
+ "src_family_id",
+ "src_member_id",
+ "name",
+ "relation",
+ "father_guardian_name",
+ "rural_urban_flag",
+ "district_name",
+ "blockname",
+ "source_address",
+ "addressasperadhaarofapproved",
+ "village_ward_lgd_code",
+ "source_type",
+ "card_status_member",
+ "card_status_family",
+ "memberbelongtozeropovery"
+ };
+    List<Dictionary<string, object?>> Rows = new();
+    List<Dictionary<string, object?>> DisplayRows = new();
+
+    SummaryDto Summary = new();
+
+    // Filters
+    string Search = string.Empty;
+    string District = string.Empty;
+    string Block { get; set; } = string.Empty;
+    string Village { get; set; } = string.Empty;
+    string RU { get; set; } = string.Empty;
+    string Source { get; set; } = string.Empty;
+    string MemberStatus { get; set; } = string.Empty;
+    string FamilyStatus { get; set; } = string.Empty;
+
+    int Total = 0;
+    int CurrentPage = 1;
+    int PageSize { get; set; } = 10; // default to10
+    int TotalPages => Math.Max(1, (int)Math.Ceiling((double)Total / PageSize));
+
+    // Loading flag for overlay
+    bool IsLoading { get; set; } = false;
+
+
+    int TotalFamilies => Summary.TotalFamilies;
+    int TotalMembers => Summary.TotalMembers;
+    int CoveredMembers => Summary.CoveredMembers;
+    int CoveredFamilies => Summary.CoveredFamilies;
+
+    // debug message to verify handler runs
+    string LastAction { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPage();
+    }
+
+    async Task LoadPage()
+    {
+        IsLoading = true;
+
+        try
+        {
+            Summary = await Api.GetSummaryAsync(
+                Block, Village, RU,
+                Source, MemberStatus,
+                FamilyStatus, Search);
+
+            Total = Summary.TotalMembers;
+
+            Rows = await Api.GetPageAsync(
+                CurrentPage, PageSize,
+                Block, Village, RU,
+                Source, MemberStatus,
+                FamilyStatus, Search);
+
+
+            DisplayRows = Rows.ToList();
+
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    void ApplyFilters()
+    {
+        // Guard against null Rows
+        if (Rows == null)
+        {
+            DisplayRows = new List<Dictionary<string, object?>>();
+            return;
+        }
+
+        DisplayRows = Rows.Where(RowMatchesFilters).ToList();
+        StateHasChanged();
+    }
+
+    bool RowMatchesFilters(Dictionary<string, object?> r)
+    {
+        string Get(string key) => (GetValue(r, key) ?? string.Empty).ToString();
+
+        // Normalize inputs
+        var search = (Search ?? string.Empty).Trim();
+        var district = (District ?? string.Empty).Trim();
+        var block = (Block ?? string.Empty).Trim();
+        var village = (Village ?? string.Empty).Trim();
+        var ru = (RU ?? string.Empty).Trim();
+        var source = (Source ?? string.Empty).Trim();
+        var memberStatus = (MemberStatus ?? string.Empty).Trim();
+        var familyStatus = (FamilyStatus ?? string.Empty).Trim();
+
+        // Search: match name OR family id
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var name = Get("name");
+            var fid = Get("src_family_id");
+            if (name.IndexOf(search, StringComparison.OrdinalIgnoreCase) < 0 && fid.IndexOf(search, StringComparison.OrdinalIgnoreCase) < 0)
+                return false;
+        }
+
+        if (!IsMatch(district, () => string.Equals(Get("district_name"), district, StringComparison.OrdinalIgnoreCase)))
+            return false;
+        if (!IsMatch(block, () => string.Equals(Get("blockname"), block, StringComparison.OrdinalIgnoreCase)))
+            return false;
+        if (!IsMatch(village, () => Get("village_ward_lgd_code").IndexOf(village, StringComparison.OrdinalIgnoreCase) >= 0))
+            return false;
+        if (!IsMatch(ru, () => string.Equals(Get("rural_urban_flag"), ru, StringComparison.OrdinalIgnoreCase)))
+            return false;
+        if (!IsMatch(source, () => string.Equals(Get("source_type"), source, StringComparison.OrdinalIgnoreCase)))
+            return false;
+        if (!IsMatch(memberStatus, () => string.Equals(Get("card_status_member"), memberStatus, StringComparison.OrdinalIgnoreCase)))
+            return false;
+        if (!IsMatch(familyStatus, () => string.Equals(Get("card_status_family"), familyStatus, StringComparison.OrdinalIgnoreCase)))
+            return false;
+
+        return true;
+    }
+
+    static bool IsMatch(string filter, Func<bool> matchFunc)
+    {
+        return string.IsNullOrWhiteSpace(filter) || matchFunc();
+    }
+
+    // Handler for Block dropdown change: request server-side filtered data
+    async Task OnBlockChanged(ChangeEventArgs e)
+    {
+        // ensure Block gets the selected value (bind already does this but keep in sync)
+        Block = (e?.Value?.ToString() ?? string.Empty).Trim();
+        LastAction = $"Block changed to '{Block}' at {DateTime.UtcNow:O}";
+        CurrentPage = 1;
+        // reload page from the server with new Block filter so paging and summary are correct
+        await LoadPage();
+    }
+
+
+
+    async Task ApplyFiltersClicked()
+    {
+        // diagnostic: set message and log to browser console
+        LastAction = $"ApplyFiltersClicked invoked at {DateTime.UtcNow:O}";
+        Console.WriteLine(LastAction);      
+
+        CurrentPage = 1;
+        await LoadPage();
+    }
+
+    string? GetValue(Dictionary<string, object?> row, string key)
+    {
+        if (row == null) return null;
+        if (row.TryGetValue(key, out var v)) return v?.ToString();
+        // try case-insensitive
+        var found = row.FirstOrDefault(kv => string.Equals(kv.Key, key, StringComparison.OrdinalIgnoreCase));
+        return found.Equals(default(KeyValuePair<string, object?>)) ? null : found.Value?.ToString();
+    }
+
+    int ComputeTotalFamilies()
+    {
+        return DisplayRows.Select(r => GetValue(r, "src_family_id")).Where(s => !string.IsNullOrEmpty(s)).Distinct(StringComparer.OrdinalIgnoreCase).Count();
+    }
+
+    async Task Prev() { if (CurrentPage > 1) { CurrentPage--; await LoadPage(); } }
+    async Task Next() { if (CurrentPage < TotalPages) { CurrentPage++; await LoadPage(); } }
+    async Task First() { if (CurrentPage != 1) { CurrentPage = 1; await LoadPage(); } }
+    async Task Last() { if (CurrentPage != TotalPages) { CurrentPage = TotalPages; await LoadPage(); } }
+
+    async Task ExportCsv()
+    {
+        var csv = new List<string>();
+        csv.Add(string.Join(",", Headers.Select(h => '"' + h + '"')));
+        foreach (var r in DisplayRows)
+        {
+            var row = Headers.Select(h => '"' + (GetValue(r, h) ?? string.Empty).Replace("\"", "''") + '"');
+            csv.Add(string.Join(",", row));
+        }
+        var content = string.Join("\n", csv);
+        await JS.InvokeVoidAsync("downloadBlob", content, "PMJAY_Agra_Data.csv");
+    }
+
+    async Task Print()
+    {
+        await JS.InvokeVoidAsync("print");
+    }
+
+    // Reset helper
+    void Reset()
+    {
+        Search = string.Empty;
+        Block = string.Empty;
+        Village = string.Empty;
+        RU = string.Empty;
+        Source = string.Empty;
+        MemberStatus = string.Empty;
+        FamilyStatus = string.Empty;
+        LastAction = "Filters reset";
+    }
+}
+
+<!-- JS helpers -->
+<script>
+    window.downloadBlob = function(content, filename){
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([content],{type:'text/csv'}));
+    a.download=filename;
+    a.click();
+    };
+</script>
