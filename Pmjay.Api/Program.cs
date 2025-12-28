@@ -2,6 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Pmjay.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+IConfiguration configuration = new ConfigurationBuilder()
+      .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+      .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true, reloadOnChange: true)
+      .AddEnvironmentVariables()
+      .AddCommandLine(args)
+      .Build();
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
@@ -15,7 +21,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddScoped<AgraDataService>();
 // Configure DbContext
-var conn = builder.Configuration.GetConnectionString("Default") ?? "Server=DESKTOP-PML14MH\\SQLEXPRESS;Database=GauravLab;Integrated Security=True;TrustServerCertificate=True;";
+var conn = configuration.GetConnectionString("Default");
 if (!string.IsNullOrEmpty(conn))
 {
     builder.Services.AddDbContext<AgraDbContext>(options => options.UseSqlServer(conn));
