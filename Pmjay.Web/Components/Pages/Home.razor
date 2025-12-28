@@ -9,11 +9,12 @@
 
     <!-- ================= FIXED HEADER ================= -->
     <div class="pmjay-header fixed-top d-flex align-items-center p-3 shadow-sm bg-white">
-
+        <!-- Left Logo -->
         <div class="flex-shrink-0">
             <img src="PMJAYl.png" class="gov-logo" />
         </div>
 
+        <!-- Center Title -->
         <div class="flex-grow-1 text-center">
             <h2 class="mb-1 fw-bold text-primary pmjay-title">
                 आयुष्मान भारत – प्रधानमंत्री जन आरोग्य योजना (AB-PMJAY)
@@ -23,9 +24,25 @@
             </div>
         </div>
 
-        <div class="flex-shrink-0">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Seal_of_Uttar_Pradesh.svg"
-                 class="gov-logo" />
+        <!-- Right Logos + App Links -->
+        <div class="flex-shrink-0 d-flex align-items-center">
+            <!-- UP Seal Logo -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Seal_of_Uttar_Pradesh.svg" class="gov-logo me-3" />
+
+           @*  <!-- Android App Link -->
+            <a href="https://play.google.com/store/apps/details?id=com.beneficiaryapp"
+               target="_blank"
+               title="Download Android App"
+               class="btn btn-outline-success btn-sm me-2">
+                <i class="bi bi-android"></i> Ayushman App
+            </a>
+            <!-- Android App Link -->
+            <a href="https://play.google.com/store/apps/details?id=com.ayushmaanbharat"
+               target="_blank"
+               title="Download Android App"
+               class="btn btn-outline-success btn-sm me-2">
+                <i class="bi bi-android"></i> Sarthi App
+            </a> *@
         </div>
     </div>
 
@@ -77,7 +94,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold">Village / Urban Centre</label>
+                        <label class="form-label fw-semibold">Village / Mohalla (ULB)</label>
                         <input class="form-control pmjay-input"
                                placeholder="Type village name"
                                @bind="Village"
@@ -106,7 +123,7 @@
                         <label class="form-label fw-semibold">Member Status</label>
                         <select class="form-select pmjay-input" @bind="MemberStatus">
                             <option value="">All</option>
-                            <option value="EKYC">KYC Needed</option>
+                            <option value="EKYC">Left Out Data</option>
                             <option value="Approved">Approved</option>
                             <option value="Applied">Applied</option>
                             <option value="Disabled">Disabled</option>
@@ -131,6 +148,7 @@
         </div>
     </div>
     }
+ 
     <!-- ================= SUMMARY ================= -->
     <div class="row g-3 mb-3">
         <div class="col-md-3">
@@ -169,16 +187,24 @@
             </div>
         </div>
     </div>
-
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="actions">
+            <button class="btn btn-success me-2" @onclick="ExportCsv"><i class="bi bi-download"></i> Download CSV</button>
+            <button class="btn btn-outline-secondary" @onclick="Print"><i class="bi bi-printer"></i> Print</button>
+        </div>
+        <div class="small text-muted">Showing page @CurrentPage of @TotalPages</div>
+    </div>
     <!-- ================= TABLE ================= -->
-    <div class="card pmjay-table-card shadow-sm">
+    <div class="card pmjay-table-card shadow-sm" id="printableTable">
         <div class="card-body table-responsive px-0">
             <table class="table pmjay-table align-middle mb-0">
                 <thead>
                     <tr>
                         @foreach (var h in Headers)
                         {
-                            <th class="text-nowrap fw-semibold">@h</th>
+                            <th class="text-nowrap fw-semibold">
+                                @(HeaderDisplayNames.ContainsKey(h) ? HeaderDisplayNames[h] : h)
+                            </th>
                         }
                     </tr>
                 </thead>
@@ -190,7 +216,25 @@
                             <tr>
                                 @foreach (var h in Headers)
                                 {
-                                    <td>@FormatValue(h, GetValue(r, h))</td>
+                                    var cellValue = GetValue(r, h)?.ToString()?.Trim();
+
+                                    <td>
+                                        @{
+                                            // Check if this column is "card_status_member"
+                                            bool isCardStatusColumn = h?.ToString()?.Trim()?.ToLower() == "card_status_member";
+                                        }
+
+                                        @if (isCardStatusColumn && string.IsNullOrEmpty(cellValue))
+                                        {
+                                            <a href="https://beneficiary.nha.gov.in" target="_blank" title="Do eKYC" class="badge badge-warning kyc-badge">
+                                                KYC Needed
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            @FormatValue(h, cellValue)
+                                        }
+                                    </td>
                                 }
                             </tr>
                         }
@@ -217,14 +261,34 @@
         <button class="btn btn-outline-secondary" @onclick="Last">Last</button>
     </div>
     <!-- ================= LOADER ================= -->
-    @if (IsLoading)
-    {
-        <div class="loading-overlay d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+   @if (IsLoading)
+{
+    <div class="loading-overlay">
+        <div class="loader-card text-center">
+            <div class="chakra-spin mb-3"></div>
+
+            <div class="fw-semibold text-primary fs-5">
+                कृपया प्रतीक्षा करें…
             </div>
+
+            <div class="text-muted small mt-1">
+                आयुष्मान भारत (PMJAY) डेटा सुरक्षित रूप से लोड हो रहा है
+            </div>
+
+            <div class="progress mt-3" style="height:6px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     style="width: 100%"></div>
+            </div>
+
+            <div class="text-muted small mt-2">
+                This may take a few seconds. Thank you for your patience.
+            </div>
+            <div class="text-muted small mt-3">
+    यह सरकारी डेटा है। कृपया दुरुपयोग न करें।
+</div>
         </div>
-    }
+    </div>
+}
 
 </div>
 <!-- ================= GOVERNMENT DISCLAIMER ================= -->
@@ -277,8 +341,8 @@
  "PINAHAT",
  "SAIYAN",
  "SHAMSABAD",
- "M (M Corp.)",
-  "M (CB)",
+ "AGRA (M Corp.)",
+  "AGRA (CB)",
 
         // --- Urban Local Bodies ---
         "Fatehpur Sikri (NPP)",
@@ -313,6 +377,18 @@
  // "card_status_family",
  // "memberbelongtozeropovery"
  };
+    readonly Dictionary<string, string> HeaderDisplayNames = new()
+    {
+        { "src_family_id", "Family ID" },
+        { "name", "Member Name" },
+        { "relation", "Relation" },
+        { "father_guardian_name", "Father/Guardian Name" },
+        { "blockname", "Block Name" },
+        { "source_address", "Source Address" },
+        { "source_type", "Source Type" },
+        { "card_status_member", "Card Status" }
+    };
+
     List<Dictionary<string, object?>> Rows = new();
     List<Dictionary<string, object?>> DisplayRows = new();
 
@@ -356,30 +432,34 @@
     async Task LoadPage()
     {
         IsLoading = true;
+        await InvokeAsync(StateHasChanged);   // 🔹 force render loader immediately
 
         try
         {
-            Summary = await Api.GetSummaryAsync(
+            var summaryTask = Api.GetSummaryAsync(
                 Block, Village, RU,
                 Source, MemberStatus,
                 FamilyStatus, Search);
 
-            Total = Summary.TotalMembers;
-
-            Rows = await Api.GetPageAsync(
+            var rowsTask = Api.GetPageAsync(
                 CurrentPage, PageSize,
                 Block, Village, RU,
                 Source, MemberStatus,
                 FamilyStatus, Search);
 
+            // 🚀 Run both API calls in parallel
+            await Task.WhenAll(summaryTask, rowsTask);
 
+            Summary = await summaryTask;
+            Rows = await rowsTask;
+
+            Total = Summary.TotalMembers;
             DisplayRows = Rows.ToList();
-
         }
         finally
         {
             IsLoading = false;
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         }
     }
     bool ShowFilters = true;
@@ -538,12 +618,13 @@
     }.Count(x => !string.IsNullOrWhiteSpace(x));
     async Task Print()
     {
-        await JS.InvokeVoidAsync("print");
+        await JS.InvokeVoidAsync("window.print");
     }
 
     // Reset helper
     void Reset()
     {
+        // Clear all filters
         Search = string.Empty;
         Block = string.Empty;
         Village = string.Empty;
@@ -552,6 +633,7 @@
         MemberStatus = string.Empty;
         FamilyStatus = string.Empty;
         LastAction = "Filters reset";
+        DisplayRows = new List<Dictionary<string, object?>>();
     }
 }
 
