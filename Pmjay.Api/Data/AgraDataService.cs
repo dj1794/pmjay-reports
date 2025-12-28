@@ -133,10 +133,21 @@ public class AgraDataService
 
         if (!string.IsNullOrWhiteSpace(memberStatus))
         {
-            var m = memberStatus.Trim();
-            q = q.Where(a => a.card_status_member != null && a.card_status_member == m);
-        }
+            q = memberStatus switch
+            {
+                "Approved" => q.Where(a => a.card_status_member == "Approved"),
 
+                "Applied" => q.Where(a => a.card_status_member == "S"),
+
+                "Disabled" => q.Where(a => a.card_status_member == "Disabled"),
+
+                "EKYC" => q.Where(a =>
+                    a.card_status_member == null ||
+                    a.card_status_member == "DO Ekyc"),
+
+                _ => q
+            };
+        }
         if (!string.IsNullOrWhiteSpace(familyStatus))
         {
             var f = familyStatus.Trim();

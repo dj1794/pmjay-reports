@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddScoped<AgraDataService>();
 // Configure DbContext
-var conn = builder.Configuration.GetConnectionString("Default") ?? "Server=DINESHJ\\SQLSERVERDJ;Database=GauravLab;User Id=Rapid;Password=Rapid@123;TrustServerCertificate=True;";
+var conn = builder.Configuration.GetConnectionString("Default") ?? "Server=DESKTOP-PML14MH\\SQLEXPRESS;Database=GauravLab;Integrated Security=True;TrustServerCertificate=True;";
 if (!string.IsNullOrEmpty(conn))
 {
     builder.Services.AddDbContext<AgraDbContext>(options => options.UseSqlServer(conn));

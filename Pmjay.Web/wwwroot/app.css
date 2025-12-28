@@ -49,3 +49,160 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+.pmjay-header {
+    background: linear-gradient(90deg, #f8fbff, #eef6ff);
+    border-left: 6px solid #0d6efd;
+    border-radius: 10px;
+}
+
+.gov-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.pmjay-header h4 {
+    line-height: 1.3;
+}
+
+.pmjay-table-card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.pmjay-table {
+    font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+    font-size: 13.5px;
+}
+
+    .pmjay-table thead {
+        background: #f4f7fb;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .pmjay-table th {
+        padding: 12px 14px;
+        color: #1f2937;
+        border-bottom: 2px solid #e5e7eb;
+        white-space: nowrap;
+    }
+
+    .pmjay-table td {
+        padding: 10px 14px;
+        color: #374151;
+        max-width: 220px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .pmjay-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+        .pmjay-table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+    /* Status highlight */
+    .pmjay-table td:has(.status-approved) {
+        color: #198754;
+        font-weight: 600;
+    }
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+}
+
+.pmjay-filter-card {
+    border-radius: 12px;
+    background: #fdfefe;
+}
+
+.pmjay-input {
+    font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+    font-size: 13.5px;
+    border-radius: 8px;
+}
+
+    .pmjay-input:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.15rem rgba(13,110,253,.15);
+    }
+
+.pmjay-filter-card .form-label {
+    font-size: 13px;
+    color: #374151;
+}
+
+.pmjay-btn {
+    font-size: 13.5px;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.pmjay-filter-card small {
+    font-size: 11.5px;
+}
+
+.gov-disclaimer {
+    position: relative;
+}
+
+    .gov-disclaimer .card {
+        background: #fff4f4;
+        border-left: 5px solid #dc3545;
+    }
+
+    .gov-disclaimer p {
+        font-family: 'Segoe UI', 'Noto Sans Devanagari', sans-serif;
+        line-height: 1.5;
+    }
+
+body {
+    font-family: 'Segoe UI', 'Noto Sans Devanagari', 'Mangal', sans-serif;
+}
+
+.pmjay-header {
+    height: 90px;
+    border-bottom: 3px solid #0d6efd;
+    z-index: 1030;
+}
+
+.pmjay-header-spacer {
+    height: 95px;
+}
+
+.gov-logo {
+    height: 60px;
+}
+
+.pmjay-title {
+    letter-spacing: 0.3px;
+}
+
+body {
+    font-family: 'Segoe UI', 'Noto Sans Devanagari', 'Mangal', sans-serif;
+}
+
+@media (max-width: 768px) {
+    .pmjay-header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+
+    .pmjay-header-spacer {
+        height: 140px;
+    }
+
+    .gov-logo {
+        height: 45px;
+    }
+}
