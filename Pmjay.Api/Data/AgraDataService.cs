@@ -83,10 +83,10 @@ public class AgraDataService
             .CountAsync();
 
         // Covered members = count where card_status_member == 'Approved' (case-insensitive)
-        var coveredMembers = await q.Where(a => !string.IsNullOrEmpty(a.card_status_member) && a.card_status_member == "APPROVED").CountAsync();
+        var coveredMembers = await q.Where(a => !string.IsNullOrEmpty(a.card_status_member) && a.card_status_member == "Approved").CountAsync();
 
         // Covered families = distinct src_family_id where any member in family has card_status_member == 'Approved'
-        var coveredFamilies = await q.Where(a => !string.IsNullOrEmpty(a.src_family_id) && !string.IsNullOrEmpty(a.card_status_member) && a.card_status_member == "APPROVED")
+        var coveredFamilies = await q.Where(a => !string.IsNullOrEmpty(a.src_family_id) && !string.IsNullOrEmpty(a.card_status_member) && a.card_status_member == "Approved")
             .Select(a => a.src_family_id)
             .Distinct()
             .CountAsync();
@@ -135,11 +135,16 @@ public class AgraDataService
         {
             q = memberStatus switch
             {
-                "Approved" => q.Where(a => a.card_status_member == "Approved"),
+                "Approved" => q.Where(a =>
+                    a.card_status_member != null &&
+                    a.card_status_member.ToUpper() == "Approved"),
 
-                "Applied" => q.Where(a => a.card_status_member == "S"),
+                "Applied" => q.Where(a =>
+                    a.card_status_member == "S"),
 
-                "Disabled" => q.Where(a => a.card_status_member == "Disabled"),
+                "Disabled" => q.Where(a =>
+                    a.card_status_member != null &&
+                    a.card_status_member.ToUpper() == "Disabled"),
 
                 "EKYC" => q.Where(a =>
                     a.card_status_member == null ||

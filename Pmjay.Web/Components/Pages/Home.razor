@@ -20,7 +20,7 @@
                 आयुष्मान भारत – प्रधानमंत्री जन आरोग्य योजना (AB-PMJAY)
             </h2>
             <div class="fs-6 fw-semibold text-secondary">
-                पात्र लाभार्थियों की सूची, जनपद – आगरा, उत्तर प्रदेश
+                पात्र लाभार्थियों की सूची (डेटा प्रबंधन प्रणाली) जनपद आगरा, उत्तर प्रदेश
             </div>
         </div>
 
@@ -29,20 +29,6 @@
             <!-- UP Seal Logo -->
             <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Seal_of_Uttar_Pradesh.svg" class="gov-logo me-3" />
 
-           @*  <!-- Android App Link -->
-            <a href="https://play.google.com/store/apps/details?id=com.beneficiaryapp"
-               target="_blank"
-               title="Download Android App"
-               class="btn btn-outline-success btn-sm me-2">
-                <i class="bi bi-android"></i> Ayushman App
-            </a>
-            <!-- Android App Link -->
-            <a href="https://play.google.com/store/apps/details?id=com.ayushmaanbharat"
-               target="_blank"
-               title="Download Android App"
-               class="btn btn-outline-success btn-sm me-2">
-                <i class="bi bi-android"></i> Sarthi App
-            </a> *@
         </div>
     </div>
 
@@ -194,6 +180,24 @@
         </div>
         <div class="small text-muted">Showing page @CurrentPage of @TotalPages</div>
     </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex align-items-center gap-2">
+        <span class="small text-muted">Rows per page:</span>
+        <select class="form-select form-select-sm w-auto"
+                    @bind="RowsPerPage"
+                    @bind:after="OnRowsPerPageChanged">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+
+    <div class="small text-muted">
+        Page @CurrentPage of @TotalPages
+    </div>
+</div>
     <!-- ================= TABLE ================= -->
     <div class="card pmjay-table-card shadow-sm" id="printableTable">
         <div class="card-body table-responsive px-0">
@@ -323,7 +327,13 @@
         </div>
     </div>
 </div>
+<footer class="bg-light border-top text-center text-secondary small py-2 mt-3">
+    © @DateTime.Now.Year Ayushman Bharat – Pradhan Mantri Jan Arogya Yojana (AB-PMJAY), Agra District |
+    All rights reserved | Developed & Maintained by Office Of The Chief Medical Officer, Agra
+</footer>
 @code {
+
+    int RowsPerPage = 10;   // default
     readonly List<string> Blocks = new()
  {
  "ACHHNERA",
@@ -428,7 +438,11 @@
     {
         await LoadPage();
     }
-
+    async Task OnRowsPerPageChanged()
+    {
+        CurrentPage = 1;
+        await LoadPage();
+    }
     async Task LoadPage()
     {
         IsLoading = true;
