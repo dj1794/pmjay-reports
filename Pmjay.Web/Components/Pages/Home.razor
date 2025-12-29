@@ -185,7 +185,7 @@
     <div class="d-flex align-items-center gap-2">
         <span class="small text-muted">Rows per page:</span>
         <select class="form-select form-select-sm w-auto"
-                    @bind="RowsPerPage"
+                    @bind="PageSize"
                     @bind:after="OnRowsPerPageChanged">
             <option value="5">5</option>
             <option value="10">10</option>
@@ -199,7 +199,7 @@
     </div>
 </div>
     <!-- ================= TABLE ================= -->
-    <div class="card pmjay-table-card shadow-sm" id="printableTable">
+    <div class="container-fluid px-2" id="printableTable">
         <div class="card-body table-responsive px-0">
             <table class="table pmjay-table align-middle mb-0">
                 <thead>
@@ -652,23 +652,41 @@
 }
 
 <style>
-    .home-wrapper { max-width: 1200px; margin: 0 auto; }
-    .header .logo { height: 60px; }
-    .header .org-logo { height: 48px; }
-    .filter-card .card-body { background: linear-gradient(180deg,#fff 0%, #f8f9fa 100%); }
-    .stat-card { border-left: 4px solid #0d6efd; }
-    .stat-card .card-body { padding: 1rem; }
-    .actions .btn { min-width: 140px; }
-    .table thead th { position: sticky; top: 0; z-index: 2; }
-    .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.7); z-index: 2000; }
+    .home-wrapper {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 12px;
+    }
+
+
+    .pmjay-header-spacer {
+        height: 72px;
+    }
+
+    .pmjay-table th {
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+    }
+
+    .pmjay-table td, .pmjay-table th {
+        white-space: nowrap;
+        padding: .5rem .75rem;
+        font-size: .9rem;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255,255,255,.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        font-weight: 600;
+    }
 </style>
 
-<!-- JS helpers -->
 <script>
-    window.downloadBlob = function(content, filename){
-    var a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([content],{type:'text/csv'}));
-    a.download=filename;
-    a.click();
-    };
+    window.initInfiniteScroll=function(dotnet){const s=document.getElementById('scrollSentinel');new IntersectionObserver(e=>{if(e[0].isIntersecting)dotnet.invokeMethodAsync('LoadNextPage')}).observe(s)}
 </script>
