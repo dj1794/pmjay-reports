@@ -22,10 +22,13 @@
             <div class="fs-6 fw-semibold text-secondary">
                 पात्र लाभार्थियों की सूची (डेटा प्रबंधन प्रणाली) जनपद आगरा, उत्तर प्रदेश
             </div>
+            <div class="fs-7 fw-semibold text-secondary">
+                टोल फ्री हेल्पलाइन न०-1800 4444 4444/14555
+            </div>
         </div>
 
         <!-- Right Logos + App Links -->
-        <div class="flex-shrink-0 d-flex align-items-center">
+        <div class="flex-shrink-0 d-flex align-items-center right-logo">
             <!-- UP Seal Logo -->
             <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Seal_of_Uttar_Pradesh.svg" class="gov-logo me-3" />
 
@@ -102,6 +105,10 @@
                             <option value="MMJAA">MMJAA</option>
                             <option value="STPHH">STPHH</option>
                             <option value="BOCW">BOCW</option>
+                                <option value="ANTYODAY">ANTYODAY</option>
+                                <option value="ASHA">ASHA</option>
+                                <option value="AWH">AWH</option>
+                                <option value="AWW">AWW</option>
                         </select>
                     </div>
 
@@ -137,50 +144,58 @@
  
     <!-- ================= SUMMARY ================= -->
     <div class="row g-3 mb-3">
-        <div class="col-md-3">
-            <div class="card stat-card shadow-sm text-center">
-                <div class="card-body">
-                    <small class="text-muted">Total Families</small>
-                    <h4>@Summary.TotalFamilies</h4>
+     <div class="row g-3">
+            <div class="row g-3">
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card gradient-blue">
+                        <div class="card-body text-center">
+                            <div class="stat-title">Total Families</div>
+                            <div class="stat-number">@Summary.TotalFamilies</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-3">
-            <div class="card stat-card shadow-sm text-center">
-                <div class="card-body">
-                    <small class="text-muted">Total Members</small>
-                    <h4>@Summary.TotalMembers</h4>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card gradient-green">
+                        <div class="card-body text-center">
+                            <div class="stat-title">Total Members</div>
+                            <div class="stat-number">@Summary.TotalMembers</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-3">
-            <div class="card stat-card shadow-sm text-center">
-                <div class="card-body">
-                    <small class="text-muted">Covered Members</small>
-                    <h4>@Summary.CoveredMembers</h4>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card gradient-yellow">
+                        <div class="card-body text-center">
+                            <div class="stat-title">Covered Members</div>
+                            <div class="stat-number">@Summary.CoveredMembers</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-3">
-            <div class="card stat-card shadow-sm text-center">
-                <div class="card-body">
-                    <small class="text-muted">Covered Families</small>
-                    <h4>@Summary.CoveredFamilies</h4>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card gradient-purple">
+                        <div class="card-body text-center">
+                            <div class="stat-title">Covered Families</div>
+                            <div class="stat-number">@Summary.CoveredFamilies</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+</div>
     </div>
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div class="actions">
-            <button class="btn btn-success me-2" @onclick="ExportCsv"><i class="bi bi-download"></i> Download CSV</button>
-            <button class="btn btn-outline-secondary" @onclick="Print"><i class="bi bi-printer"></i> Print</button>
-        </div>
-        <div class="small text-muted">Showing page @CurrentPage of @TotalPages</div>
-    </div>
-
     <div class="d-flex justify-content-between align-items-center mb-2">
     <div class="d-flex align-items-center gap-2">
         <span class="small text-muted">Rows per page:</span>
@@ -195,75 +210,96 @@
     </div>
 
     <div class="small text-muted">
-        Page @CurrentPage of @TotalPages
+            Showing page @CurrentPage of @TotalPages
     </div>
 </div>
     <!-- ================= TABLE ================= -->
-    <div class="container-fluid px-2" id="printableTable">
-        <div class="card-body table-responsive px-0">
-            <table class="table pmjay-table align-middle mb-0">
-                <thead>
-                    <tr>
-                        @foreach (var h in Headers)
+    <div class="container-fluid px-2" id="printSection">
+        <div class="card pmjay-table-card shadow-sm mb-3">
+            <!-- Table Header -->
+            <div class="card-header position-relative text-center">
+                <!-- Title Centered -->
+                <h5 class="mb-0" style="color: black;">Beneficiary Data</h5>
+
+                <!-- Action Buttons Positioned Right -->
+                <div class="actions position-absolute top-50 end-0 translate-middle-y me-3">
+                    <button class="btn btn-success me-2" @onclick="ExportCsv">
+                        <i class="bi bi-download"></i> Download CSV
+                    </button>
+                    <button class="btn btn-outline-secondary" @onclick="Print">
+                        <i class="bi bi-printer"></i> Print
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Table Body -->
+            <div class="card-body table-responsive px-0">
+                <table class="table pmjay-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            @foreach (var h in Headers)
+                            {
+                                <th class="text-nowrap fw-semibold">
+                                    @(HeaderDisplayNames.ContainsKey(h) ? HeaderDisplayNames[h] : h)
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (DisplayRows?.Count > 0)
                         {
-                            <th class="text-nowrap fw-semibold">
-                                @(HeaderDisplayNames.ContainsKey(h) ? HeaderDisplayNames[h] : h)
-                            </th>
+                            @foreach (var r in DisplayRows)
+                            {
+                                <tr>
+                                    @foreach (var h in Headers)
+                                    {
+                                        var cellValue = GetValue(r, h)?.ToString()?.Trim();
+
+                                        <td>
+                                            @{
+                                                bool isCardStatusColumn = h?.ToString()?.Trim()?.ToLower() == "card_status_member";
+                                            }
+
+                                            @if (isCardStatusColumn && string.IsNullOrEmpty(cellValue))
+                                            {
+                                                <a href="https://beneficiary.nha.gov.in" target="_blank" title="Do eKYC" class="badge badge-warning kyc-badge">
+                                                    KYC Needed
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                @FormatValue(h, cellValue)
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
                         }
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (DisplayRows?.Count > 0)
-                    {
-                        @foreach (var r in DisplayRows)
+                        else
                         {
                             <tr>
-                                @foreach (var h in Headers)
-                                {
-                                    var cellValue = GetValue(r, h)?.ToString()?.Trim();
-
-                                    <td>
-                                        @{
-                                            // Check if this column is "card_status_member"
-                                            bool isCardStatusColumn = h?.ToString()?.Trim()?.ToLower() == "card_status_member";
-                                        }
-
-                                        @if (isCardStatusColumn && string.IsNullOrEmpty(cellValue))
-                                        {
-                                            <a href="https://beneficiary.nha.gov.in" target="_blank" title="Do eKYC" class="badge badge-warning kyc-badge">
-                                                KYC Needed
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            @FormatValue(h, cellValue)
-                                        }
-                                    </td>
-                                }
+                                <td colspan="@Headers.Count" class="text-center text-muted py-4">
+                                    No data to display
+                                </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="@Headers.Count" class="text-center text-muted py-4">
-                                No data to display
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center gap-2 my-3">
+                <button class="btn btn-outline-secondary" @onclick="First">First</button>
+                <button class="btn btn-outline-secondary" @onclick="Prev">Prev</button>
+                <span class="align-self-center">Page @CurrentPage of @TotalPages</span>
+                <button class="btn btn-outline-secondary" @onclick="Next">Next</button>
+                <button class="btn btn-outline-secondary" @onclick="Last">Last</button>
+            </div>
         </div>
     </div>
 
-    <!-- ================= PAGINATION ================= -->
-    <div class="d-flex justify-content-center gap-2 my-3">
-        <button class="btn btn-outline-secondary" @onclick="First">First</button>
-        <button class="btn btn-outline-secondary" @onclick="Prev">Prev</button>
-        <span class="align-self-center">Page @CurrentPage of @TotalPages</span>
-        <button class="btn btn-outline-secondary" @onclick="Next">Next</button>
-        <button class="btn btn-outline-secondary" @onclick="Last">Last</button>
-    </div>
+   
     <!-- ================= LOADER ================= -->
    @if (IsLoading)
 {
@@ -612,15 +648,32 @@
     async Task ExportCsv()
     {
         var csv = new List<string>();
-        csv.Add(string.Join(",", Headers.Select(h => '"' + h + '"')));
+
+        // Header
+        csv.Add(string.Join(",", Headers.Select(h => $"\"{h}\"")));
+
+        // Rows
         foreach (var r in DisplayRows)
         {
-            var row = Headers.Select(h => '"' + (GetValue(r, h) ?? string.Empty).Replace("\"", "''") + '"');
+            var row = Headers.Select(h =>
+            {
+                var value = GetValue(r, h)?.ToString() ?? string.Empty;
+                value = value.Replace("\"", "\"\""); // CSV escaping
+                return $"\"{value}\"";
+            });
+
             csv.Add(string.Join(",", row));
         }
-        var content = string.Join("\n", csv);
-        await JS.InvokeVoidAsync("downloadBlob", content, "PMJAY_Agra_Data.csv");
+
+        var content = string.Join("\r\n", csv);
+
+        await JS.InvokeVoidAsync(
+            "downloadCsv",
+            content,
+            "PMJAY_Agra_Data.csv"
+        );
     }
+
     int ActiveFilterCount =>
     new[]
     {
@@ -632,7 +685,8 @@
     }.Count(x => !string.IsNullOrWhiteSpace(x));
     async Task Print()
     {
-        await JS.InvokeVoidAsync("window.print");
+        await JS.InvokeVoidAsync("printPage");
+
     }
 
     // Reset helper
@@ -648,44 +702,10 @@
         FamilyStatus = string.Empty;
         LastAction = "Filters reset";
         DisplayRows = new List<Dictionary<string, object?>>();
+        Summary = new SummaryDto();
+
     }
 }
-
-<style>
-    .home-wrapper {
-        width: 100%;
-        max-width: 100%;
-        padding: 0 12px;
-    }
-
-
-    .pmjay-header-spacer {
-        height: 72px;
-    }
-
-    .pmjay-table th {
-        position: sticky;
-        top: 0;
-        background: #f8f9fa;
-    }
-
-    .pmjay-table td, .pmjay-table th {
-        white-space: nowrap;
-        padding: .5rem .75rem;
-        font-size: .9rem;
-    }
-
-    .loading-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(255,255,255,.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 2000;
-        font-weight: 600;
-    }
-</style>
 
 <script>
     window.initInfiniteScroll=function(dotnet){const s=document.getElementById('scrollSentinel');new IntersectionObserver(e=>{if(e[0].isIntersecting)dotnet.invokeMethodAsync('LoadNextPage')}).observe(s)}

@@ -205,5 +205,25 @@
             document.getElementById('custom-loader')?.remove();
         });
     </script>
+    <script>
+        window.downloadCsv = function (content, fileName) {
+            const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            a.style.display = "none";
+
+            document.body.appendChild(a);
+            a.click();
+
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+    </script>
+    <script>
+        window.printPage = () => window.print();
+    </script>
 </body>
 </html>

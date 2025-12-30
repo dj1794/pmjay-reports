@@ -1,4 +1,4 @@
-html, body {
+﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -50,31 +50,123 @@ h1:focus {
     border-color: #929292;
 }
 .pmjay-header {
+    width: 100%;
     background: linear-gradient(90deg, #f8fbff, #eef6ff);
     border-left: 6px solid #0d6efd;
+    border-right: 6px solid #0d6efd;
     border-radius: 10px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1)!important;
+    flex-wrap: nowrap; /* keep all items in one row */
 }
 
+/* Logos */
 .gov-logo {
     width: 100px;
     height: 100px;
     object-fit: contain;
 }
 
-.pmjay-header h4 {
-    line-height: 1.3;
+/* Center Title */
+.pmjay-header .pmjay-title {
+    font-size: 2.0rem;
+    font-weight: 700;
+    color: #0d6efd;
+    text-align: center;
+    margin: 0 12px;
+}
+
+.pmjay-header .fs-6 {
+    font-size: 1.2rem!important;
+    font-weight: 600;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Spacer for fixed header */
+.pmjay-header-spacer {
+    height: 130px; /* matches default header height */
+}
+
+/* ============================ */
+/* Tablet / Small Screens       */
+/* ============================ */
+@media (max-width: 768px) {
+    .pmjay-header {
+        padding: 16px 14px;
+    }
+
+    .gov-logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .pmjay-header .pmjay-title {
+        font-size: clamp(1.2rem, 4vw, 1.4rem);
+    }
+
+    .pmjay-header .fs-6 {
+        font-size: clamp(0.75rem, 3vw, 0.85rem);
+    }
+
+    .pmjay-header-spacer {
+        height: 130px; /* header height remains consistent */
+    }
+}
+
+/* ============================ */
+/* Mobile / Very Small Screens  */
+/* ============================ */
+@media (max-width: 480px) {
+    .pmjay-header {
+        padding: 12px 10px;
+        flex-wrap: nowrap; /* keep items in one row */
+    }
+
+    .gov-logo {
+        width: 48px;
+        height: 48px;
+    }
+
+    .pmjay-header .pmjay-title {
+        font-size: clamp(1rem, 4vw, 1.2rem);
+        margin: 0 6px;
+    }
+
+    .pmjay-header .fs-6 {
+        font-size: clamp(0.65rem, 3vw, 0.75rem)!important;
+    }
+
+    .pmjay-header-spacer {
+        height: 150px; /* matches mobile header height */
+    }
 }
 
 .pmjay-table-card {
     border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08)!important;
+    background: #fff;
 }
 
+/* Table Base */
 .pmjay-table {
     font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
     font-size: 13.5px;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
+    /* Sticky Table Header */
     .pmjay-table thead {
         background: #f4f7fb;
         position: sticky;
@@ -82,13 +174,17 @@ h1:focus {
         z-index: 1;
     }
 
+    /* Table Header Cells */
     .pmjay-table th {
         padding: 12px 14px;
         color: #1f2937;
         border-bottom: 2px solid #e5e7eb;
         white-space: nowrap;
+        text-align: center;
+        font-weight: 600;
     }
 
+    /* Table Body Cells */
     .pmjay-table td {
         padding: 10px 14px;
         color: #374151;
@@ -96,249 +192,432 @@ h1:focus {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-align: center;
     }
 
+    /* Table Rows Hover */
     .pmjay-table tbody tr {
-        transition: background-color 0.2s ease;
+        transition: background-color 0.2s ease, transform 0.2s ease;
     }
 
         .pmjay-table tbody tr:hover {
             background-color: #f9fafb;
+            transform: translateY(-1px);
         }
 
-    /* Status highlight */
+    /* Status Highlight (approved, pending, etc.) */
     .pmjay-table td:has(.status-approved) {
-        color: #198754;
+        color: #198754; /* green */
         font-weight: 600;
     }
 
-.loading-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(3px);
-    z-index: 999;
-}
-
-.pmjay-filter-card {
-    border-radius: 12px;
-    background: #fdfefe;
-}
-
-.pmjay-input {
-    font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
-    font-size: 13.5px;
-    border-radius: 8px;
-}
-
-    .pmjay-input:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.15rem rgba(13,110,253,.15);
+    .pmjay-table td:has(.status-pending) {
+        color: #ffc107; /* yellow */
+        font-weight: 600;
     }
 
-.pmjay-filter-card .form-label {
-    font-size: 13px;
-    color: #374151;
-}
-
-.pmjay-btn {
-    font-size: 13.5px;
-    border-radius: 8px;
-    padding: 8px 12px;
-}
-
-.pmjay-filter-card small {
-    font-size: 11.5px;
-}
-
-.gov-disclaimer {
-    position: relative;
-}
-
-    .gov-disclaimer .card {
-        background: #fff4f4;
-        border-left: 5px solid #dc3545;
+    .pmjay-table td:has(.status-rejected) {
+        color: #dc3545; /* red */
+        font-weight: 600;
     }
 
-    .gov-disclaimer p {
-        font-family: 'Segoe UI', 'Noto Sans Devanagari', sans-serif;
-        line-height: 1.5;
-    }
-
-body {
-    font-family: 'Segoe UI', 'Noto Sans Devanagari', 'Mangal', sans-serif;
-}
-
-.pmjay-header {
-    height: 90px;
-    border-bottom: 3px solid #0d6efd;
-    z-index: 1030;
-}
-
-.pmjay-header-spacer {
-    height: 95px;
-}
-
-.gov-logo {
-    height: 80px;
-}
-
-.pmjay-title {
-    letter-spacing: 0.3px;
-}
-
-body {
-    font-family: 'Segoe UI', 'Noto Sans Devanagari', 'Mangal', sans-serif;
-}
-
-@media (max-width: 768px) {
-    .pmjay-header {
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-    }
-
-    .pmjay-header-spacer {
-        height: 140px;
-    }
-
-    .gov-logo {
-        height: 60px;
-        width: auto;
-        background: transparent !important;
-        border-radius: 0;
-    }
-}
-#custom-loader {
-    position: fixed;
-    inset: 0;
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.loading-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.95);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loader-card {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 28px 32px;
-    width: 340px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    animation: fadeIn 0.4s ease-in-out;
-}
-
-/* Chakra style loader */
-.chakra-spin {
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    border: 4px solid #e9ecef;
-    border-top-color: #0d6efd;
-    animation: spin 1s linear infinite;
-    margin: auto;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* KYC Badge */
 .kyc-badge {
-    background-color: #ffc107; /* Bootstrap warning color */
-    color: #212529; /* Text color inside badge */
-    padding: 0.35em 0.65em; /* Badge padding */
-    border-radius: 0.5rem; /* Rounded corners */
-    font-size: 0.875rem; /* Slightly smaller text */
-    text-decoration: none; /* Remove underline */
-    display: inline-block; /* Make it behave like badge */
-    cursor: pointer; /* Pointer on hover */
-    transition: background-color 0.2s;
+    background: #ffc107;
+    color: #212529;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
 }
 
     .kyc-badge:hover {
-        background-color: #e0a800; /* Slightly darker on hover */
-        color: #212529;
-        text-decoration: none;
+        background: #e0a800;
+        transform: translateY(-2px);
     }
 
-/* Table header styling */
-.pmjay-table th {
-    background-color: #f8f9fa; /* Light gray background */
-    color: #495057; /* Dark text */
-    font-weight: 600; /* Bold text */
-    text-align: left; /* Left-aligned */
-    padding: 0.75rem 0.5rem; /* Adjust padding */
-    border-bottom: 2px solid #dee2e6; /* Bottom border */
+/* ------------------------------- */
+/* Pagination Buttons              */
+/* ------------------------------- */
+.d-flex.justify-content-center .btn {
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+    background: #f1f5ff;
+    color: #0d6efd;
+    border: 1px solid #0d6efd;
 }
 
-    /* Optional: hover effect for headers (if interactive) */
-    .pmjay-table th:hover {
-        background-color: #e9ecef; /* Slightly darker on hover */
-        cursor: default;
+    .d-flex.justify-content-center .btn:hover {
+        background: #0d6efd;
+        color: #fff;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
     }
 
-    /* Make header text not wrap */
-    .pmjay-table th.text-nowrap {
-        white-space: nowrap;
-    }
-@media print {
-    @page {
-        size: A4 landscape;
-        margin: 8mm;
+.d-flex.justify-content-center span {
+    font-weight: 600;
+    margin: 0 12px;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+/* ------------------------------- */
+/* Responsive Adjustments          */
+/* ------------------------------- */
+@media (max-width: 768px) {
+    .pmjay-table th,
+    .pmjay-table td {
+        font-size: 12px;
+        padding: 8px 6px;
     }
 
-    /* Hide everything */
-    body * {
-        visibility: hidden;
-    }
-
-    /* Show only table */
-    #printableTable,
-    #printableTable * {
-        visibility: visible;
-    }
-
-    /* Position table properly */
-    #printableTable {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-    }
-
-    /* Improve table print look */
-    table {
-        font-size: 10px;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        border: 1px solid #000;
-        padding: 2px;
+    .d-flex.justify-content-center .btn {
+        padding: 5px 10px;
+        font-size: 0.75rem;
     }
 }
+
+@media (max-width: 480px) {
+    .pmjay-table th,
+    .pmjay-table td {
+        font-size: 11px;
+        padding: 6px 4px;
+    }
+
+    .d-flex.justify-content-center .btn {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
 }
+    .loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255,255,255,0.6);
+        backdrop-filter: blur(3px);
+        z-index: 999;
+    }
+
+    .pmjay-filter-card {
+        border-radius: 12px;
+        background: #fdfefe;
+    }
+
+    .pmjay-input {
+        font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+        font-size: 13.5px;
+        border-radius: 8px;
+    }
+
+        .pmjay-input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.15rem rgba(13,110,253,.15);
+        }
+
+    .pmjay-filter-card .form-label {
+        font-size: 13px;
+        color: #374151;
+    }
+
+    .pmjay-btn {
+        font-size: 13.5px;
+        border-radius: 8px;
+        padding: 8px 12px;
+    }
+
+    .pmjay-filter-card small {
+        font-size: 11.5px;
+    }
+
+    .gov-disclaimer {
+        position: relative;
+    }
+
+        .gov-disclaimer .card {
+            background: #fff4f4;
+            border-left: 5px solid #dc3545;
+        }
+
+        .gov-disclaimer p {
+            font-family: 'Segoe UI', 'Noto Sans Devanagari', sans-serif;
+            line-height: 1.5;
+        }
+
+    body {
+        font-family: 'Segoe UI', 'Noto Sans Devanagari', 'Mangal', sans-serif;
+    }
+    body {
+        font-family: 'Segoe UI', 'Noto Sans Devanagari', 'Mangal', sans-serif;
+    }
+    #custom-loader {
+        position: fixed;
+        inset: 0;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.95);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .loader-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 28px 32px;
+        width: 340px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    /* Chakra style loader */
+    .chakra-spin {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        border: 4px solid #e9ecef;
+        border-top-color: #0d6efd;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .kyc-badge {
+        background-color: #ffc107; /* Bootstrap warning color */
+        color: #212529; /* Text color inside badge */
+        padding: 0.35em 0.65em; /* Badge padding */
+        border-radius: 0.5rem; /* Rounded corners */
+        font-size: 0.875rem; /* Slightly smaller text */
+        text-decoration: none; /* Remove underline */
+        display: inline-block; /* Make it behave like badge */
+        cursor: pointer; /* Pointer on hover */
+        transition: background-color 0.2s;
+    }
+
+        .kyc-badge:hover {
+            background-color: #e0a800; /* Slightly darker on hover */
+            color: #212529;
+            text-decoration: none;
+        }
+
+    /* Table header styling */
+    .pmjay-table th {
+        background-color: #f8f9fa; /* Light gray background */
+        color: #495057; /* Dark text */
+        font-weight: 600; /* Bold text */
+        text-align: left; /* Left-aligned */
+        padding: 0.75rem 0.5rem; /* Adjust padding */
+        border-bottom: 2px solid #dee2e6; /* Bottom border */
+    }
+
+        /* Optional: hover effect for headers (if interactive) */
+        .pmjay-table th:hover {
+            background-color: #e9ecef; /* Slightly darker on hover */
+            cursor: default;
+        }
+
+        /* Make header text not wrap */
+        .pmjay-table th.text-nowrap {
+            white-space: nowrap;
+        }
+
+    @media print {
+
+        @page {
+            size: A4 landscape;
+            margin: 8mm;
+        }
+
+        body * {
+            visibility: hidden;
+        }
+
+        #printSection,
+        #printSection * {
+            visibility: visible;
+        }
+
+        #printSection {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        /* 🔥 MOST IMPORTANT FIX */
+        .table-responsive,
+        .table-responsive *,
+        table {
+            overflow: visible !important;
+            max-height: none !important;
+            height: auto !important;
+        }
+
+        table {
+            width: 100% !important;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 4px;
+            white-space: normal; /* 🔥 allows wrapping instead of scroll */
+        }
+
+        th {
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+
+        /* 🔹 PAGE BREAK CONTROL */
+        tr {
+            page-break-inside: avoid;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+    }
+/* Stat Cards Base */
+.stat-card {
+    border-radius: 15px;
+    padding: 25px 15px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(0,0,0,0.12);
+    }
+
+/* Titles and Numbers */
+.stat-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* Icon */
+.stat-icon {
+    font-size: 2rem;
+    opacity: 0.2;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+/* Gradients for each card */
+.gradient-blue {
+    background: linear-gradient(135deg, #4e73df, #1cc88a);
+}
+
+.gradient-green {
+    background: linear-gradient(135deg, #1cc88a, #36b9cc);
+}
+
+.gradient-yellow {
+    background: linear-gradient(135deg, #f6c23e, #f6b93b);
+}
+
+.gradient-purple {
+    background: linear-gradient(135deg, #6f42c1, #6610f2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stat-card {
+        padding: 20px 10px;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-icon {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-card {
+        padding: 15px 8px;
+    }
+
+    .stat-number {
+        font-size: 1.3rem;
+    }
+
+    .stat-icon {
+        font-size: 1.2rem;
+    }
+}
+.card-header .actions button {
+    margin-left: 4px;
+}
+
+@media (max-width: 480px) {
+    .card-header .actions {
+        position: static;
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 8px;
+        transform: none !important;
+    }
+
+        .card-header .actions button {
+            width: 100%;
+            margin-left: 0;
+            margin-bottom: 4px;
+        }
+}
+
+
+
+
+
+
+
+
+
