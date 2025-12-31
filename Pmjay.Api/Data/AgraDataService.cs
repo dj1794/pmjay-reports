@@ -142,9 +142,9 @@ public class AgraDataService
                 "Applied" => q.Where(a =>
                     a.card_status_member == "S"),
 
-                "Disabled" => q.Where(a =>
+                "Disable" => q.Where(a =>
                     a.card_status_member != null &&
-                    a.card_status_member.ToUpper() == "Disabled"),
+                    a.card_status_member.ToUpper()=="Disable"),
 
                 "EKYC" => q.Where(a =>
                     a.card_status_member == null ||

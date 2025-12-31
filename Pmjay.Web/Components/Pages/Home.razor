@@ -117,8 +117,8 @@
                             <option value="">All</option>
                             <option value="EKYC">Left Out Data</option>
                             <option value="Approved">Approved</option>
-                            <option value="Applied">Applied</option>
-                            <option value="Disabled">Disabled</option>
+                            <option value="S">Applied</option>
+                            <option value="Disable">Disable</option>
                         </select>
                     </div>
 
@@ -270,7 +270,9 @@
                                             {
                                                 @FormatValue(h, cellValue)
                                             }
+
                                         </td>
+                                        
                                     }
                                 </tr>
                             }
@@ -652,7 +654,7 @@
             "DO Ekyc" => "KYC Needed",
             "S" => "Applied",
             "Approved" => "Approved",
-            "Disabled" => "Disabled",
+                "Disable" => "Disable",
             _ => value?.ToString() ?? ""
         };
 
@@ -660,7 +662,7 @@
         {
             "Approved" => "badge bg-success",
             "Applied" => "badge bg-warning text-dark",
-            "Disabled" => "badge bg-danger",
+                "Disable" => "badge bg-danger",
             _ => "badge bg-secondary"
         };
 
