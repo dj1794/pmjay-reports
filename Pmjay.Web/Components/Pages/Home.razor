@@ -217,17 +217,17 @@
     <div class="container-fluid px-2" id="printSection">
         <div class="card pmjay-table-card shadow-sm mb-3">
             <!-- Table Header -->
-            <div class="card-header position-relative text-center">
-                <!-- Title Centered -->
-                <h5 class="mb-0" style="color: black;">Beneficiary Data</h5>
+            <div class="card-header bh-header">
+                <h5>Beneficiary Data</h5>
 
-                <!-- Action Buttons Positioned Right -->
-                <div class="actions position-absolute top-50 end-0 translate-middle-y me-3">
-                    <button class="btn btn-success me-2" @onclick="ExportCsv">
-                        <i class="bi bi-download"></i> Download CSV
+                <div class="actions">
+                    <button class="btn btn-success" @onclick="ExportCsv">
+                        <i class="bi bi-download"></i>
+                        <span>CSV</span>
                     </button>
                     <button class="btn btn-outline-secondary" @onclick="Print">
-                        <i class="bi bi-printer"></i> Print
+                        <i class="bi bi-printer"></i>
+                        <span>Print</span>
                     </button>
                 </div>
             </div>

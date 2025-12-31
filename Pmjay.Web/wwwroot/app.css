@@ -612,12 +612,43 @@ h1:focus {
             margin-bottom: 4px;
         }
 }
+.bh-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 10px 14px;
+    white-space: nowrap;
+}
 
+    .bh-header h5 {
+        margin: 0;
+        font-weight: 600;
+    }
 
+.actions {
+    position: absolute;
+    right: 14px;
+    display: flex;
+    gap: 6px;
+}
 
+/* MOBILE */
+@media (max-width: 576px) {
+    .bh-header {
+        flex-direction: column;
+        white-space: normal;
+        gap: 8px;
+    }
 
+    .actions {
+        position: static;
+        width: 100%;
+    }
 
-
-
-
-
+        .actions button {
+            flex: 1;
+            font-size: 0.8rem;
+            justify-content: center;
+        }
+}
