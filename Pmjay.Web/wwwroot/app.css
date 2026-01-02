@@ -911,3 +911,29 @@ input {
     .logout-btn:hover {
         background: #a93226;
     }
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.info-item {
+    background: #f5f7fb;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #e1e6ef;
+}
+
+.info-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    display: block;
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+}

@@ -237,80 +237,93 @@
             </div>
 
 
-            <!-- Table Body -->
             @if (ShowUpdatePopup)
-            {
-                <div class="modal fade show d-block"
-                     tabindex="-1"
-                     style="background-color: rgba(0,0,0,0.5);">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content">
+{
+    <div class="modal fade show d-block"
+         tabindex="-1"
+         style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
 
-                            <!-- Header -->
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title mb-0">
-                                    Update Beneficiary Record
-                                </h5>
-                                <button type="button"
-                                        class="btn-close btn-close-white"
-                                        @onclick="ClosePopup">
-                                </button>
-                            </div>
+                <!-- Header -->
+                            <div class="modal-header bg-primary text-white text-center">
+                    <h5 class="modal-title mb-0">
+                        Update Beneficiary Record
+                    </h5>
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            @onclick="ClosePopup">
+                    </button>
+                </div>
 
-                            <!-- Body -->
-                            <div class="modal-body">
-                                <div class="row g-3">
+                <!-- Body -->
+                <div class="modal-body">
 
-                                    <!-- Column 1 -->
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">
-                                            Field Verification Report
-                                        </label>
-
-                                        <select class="form-select"
-                                                @bind="VerificationStatus">
-                                            <option value="">-- Select --</option>
-                                            <option value="AYC">Already Have Ayushman Card</option>
-                                            <option value="FM">Family Migrated</option>
-                                            <option value="NM">Name Mismatch</option>
-                                            <option value="FNF">Family Not Found</option>
-                                            <option value="Applied">Applied</option>
-                                            <option value="OI">Other Issue</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Column 2 -->
-                                  <div class="col-md-6">
-            <label class="form-label fw-semibold">
-                Remark / PMJAY ID
-            </label>
-
-            <input type="text"
-                   class="form-control"
-                   placeholder="Enter Remark or PMJAY ID"
-                   @bind="RemarkOrPmjayId"
-                   disabled="@(!IsRemarkEnabled)" />
-        </div>
-
-                                </div>
-                            </div>
-
-
-                            <!-- Footer -->
-                            <div class="modal-footer">
-                                <button class="btn btn-outline-secondary"
-                                        @onclick="ClosePopup">
-                                    Cancel
-                                </button>
-
-                                <button class="btn btn-success">
-                                    Save
-                                </button>
-                            </div>
-
+                    <!-- Beneficiary Info -->
+                    <div class="info-grid mb-3">
+                        <div class="info-item">
+                            <span class="info-label">Family ID</span>
+                            <span class="info-value">@FamilyId</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Beneficiary Name</span>
+                            <span class="info-value">@BeneficiaryName</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Guardian Name</span>
+                            <span class="info-value">@GuardianName</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Block</span>
+                            <span class="info-value">@BlockName</span>
                         </div>
                     </div>
+
+                    <hr />
+
+                    <!-- Form -->
+                    <div class="row g-3">
+                        <!-- Field Verification Dropdown -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                Field Verification Report
+                            </label>
+                            <select class="form-select" @bind="VerificationStatus">
+                                <option value="">-- Select --</option>
+                                <option value="AYC">Already Have Ayushman Card</option>
+                                <option value="FM">Family Migrated</option>
+                                <option value="NM">Name Mismatch</option>
+                                <option value="FNF">Family Not Found</option>
+                                <option value="Applied">Applied</option>
+                                <option value="OI">Other Issue</option>
+                            </select>
+                        </div>
+
+                        <!-- Remark / PMJAY ID -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                Remark / PMJAY ID
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Enter Remark or PMJAY ID"
+                                   @bind="RemarkOrPmjayId"
+                                   disabled="@(!IsRemarkEnabled)"
+                                               style="max-width:300px;" />
+                        </div>
+                    </div>
+
                 </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
+                    <button class="btn btn-primary" @onclick="SaveRecord">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>               
             }
 
             <div class="card-body table-responsive px-0">
@@ -366,7 +379,7 @@
                                     {
                                         <td class="text-center">
                                             <button class="btn btn-sm btn-primary"
-                                                @onclick="() => OpenPopup()">
+                                                @onclick="() => OpenPopup(r)">
                                             Verify
                                         </button>
                                     </td>
@@ -848,27 +861,44 @@
 
     }
     bool ShowUpdatePopup = false;
+string VerificationStatus=string.Empty;
+string RemarkOrPmjayId=string.Empty;
 
-    @code {
+// Beneficiary Info
+string FamilyId=string.Empty;
+string BeneficiaryName=string.Empty;
+string GuardianName=string.Empty;
+string BlockName=string.Empty;
 
-    string VerificationStatus;
-    string RemarkOrPmjayId;
+// Enable textbox only when needed
+bool IsRemarkEnabled =>
+    VerificationStatus == "AYC" ||
+    VerificationStatus == "OI";
 
-    // Enable textbox only when needed
-    bool IsRemarkEnabled =>
-        VerificationStatus == "AYC" ||
-        VerificationStatus == "OI";
-
-        }
-    void OpenPopup()
-    {
-
+// Open modal
+void OpenPopup(Dictionary<string, object?> row)
+{
+    // Set info from selected row
+    FamilyId = GetValue(row, "src_family_id") ?? string.Empty;
+    BeneficiaryName = GetValue(row, "name") ?? string.Empty;
+    GuardianName = GetValue(row, "father_guardian_name") ?? string.Empty;
+    BlockName = GetValue(row, "blockname") ?? string.Empty;
+    VerificationStatus = string.Empty;
+    RemarkOrPmjayId = string.Empty;
     ShowUpdatePopup = true;
-    }
-    void ClosePopup()
-    {
+}
+// Close modal
+void ClosePopup()
+{
     ShowUpdatePopup = false;
-    }
+}
+
+// Save record
+void SaveRecord()
+{
+    // Save logic here
+    ShowUpdatePopup = false;
+}
  async Task Logout()
 {
     bool confirmLogout = await JS.InvokeAsync<bool>(
