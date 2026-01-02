@@ -233,6 +233,81 @@
 
 
             <!-- Table Body -->
+            @if (ShowUpdatePopup)
+            {
+                <div class="modal fade show d-block"
+                     tabindex="-1"
+                     style="background-color: rgba(0,0,0,0.5);">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <!-- Header -->
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title mb-0">
+                                    Update Beneficiary Record
+                                </h5>
+                                <button type="button"
+                                        class="btn-close btn-close-white"
+                                        @onclick="ClosePopup">
+                                </button>
+                            </div>
+
+                            <!-- Body -->
+                            <div class="modal-body">
+                                <div class="row g-3">
+
+                                    <!-- Column 1 -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">
+                                            Field Verification Report
+                                        </label>
+
+                                        <select class="form-select"
+                                                @bind="VerificationStatus">
+                                            <option value="">-- Select --</option>
+                                            <option value="AYC">Already Have Ayushman Card</option>
+                                            <option value="FM">Family Migrated</option>
+                                            <option value="NM">Name Mismatch</option>
+                                            <option value="FNF">Family Not Found</option>
+                                            <option value="Applied">Applied</option>
+                                            <option value="OI">Other Issue</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Column 2 -->
+                                  <div class="col-md-6">
+            <label class="form-label fw-semibold">
+                Remark / PMJAY ID
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   placeholder="Enter Remark or PMJAY ID"
+                   @bind="RemarkOrPmjayId"
+                   disabled="@(!IsRemarkEnabled)" />
+        </div>
+
+                                </div>
+                            </div>
+
+
+                            <!-- Footer -->
+                            <div class="modal-footer">
+                                <button class="btn btn-outline-secondary"
+                                        @onclick="ClosePopup">
+                                    Cancel
+                                </button>
+
+                                <button class="btn btn-success">
+                                    Save
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
             <div class="card-body table-responsive px-0">
                 <table class="table pmjay-table align-middle mb-0">
                     <thead>
@@ -243,6 +318,13 @@
                                     @(HeaderDisplayNames.ContainsKey(h) ? HeaderDisplayNames[h] : h)
                                 </th>
                             }
+                            @if(showVerifyButton)
+                            {
+                             <th class="text-center text-nowrap fw-semibold">
+                                Action
+                            </th>
+                            }
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -253,15 +335,16 @@
                                 <tr>
                                     @foreach (var h in Headers)
                                     {
+                                        showVerifyButton = false;
                                         var cellValue = GetValue(r, h)?.ToString()?.Trim();
 
                                         <td>
                                             @{
                                                 bool isCardStatusColumn = h?.ToString()?.Trim()?.ToLower() == "card_status_member";
                                             }
-
                                             @if (isCardStatusColumn && string.IsNullOrEmpty(cellValue))
                                             {
+                                                showVerifyButton = true;
                                                 <a href="https://beneficiary.nha.gov.in" target="_blank" title="Do eKYC" class="badge badge-warning kyc-badge">
                                                     KYC Needed
                                                 </a>
@@ -273,6 +356,15 @@
 
                                         </td>
                                         
+                                    }
+                                      @if(showVerifyButton)
+                                    {
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-primary"
+                                                @onclick="() => OpenPopup()">
+                                            Verify
+                                        </button>
+                                    </td>
                                     }
                                 </tr>
                             }
@@ -404,7 +496,7 @@
     All rights reserved | Developed & Maintained by Office Of The Chief Medical Officer, Agra
 </footer>
 @code {
-
+    bool showVerifyButton = false;
     int RowsPerPage = 10;   // default
     readonly List<string> Blocks = new()
  {
@@ -740,6 +832,28 @@
         DisplayRows = new List<Dictionary<string, object?>>();
         Summary = new SummaryDto();
 
+    }
+    bool ShowUpdatePopup = false;
+
+    @code {
+
+    string VerificationStatus;
+    string RemarkOrPmjayId;
+
+    // Enable textbox only when needed
+    bool IsRemarkEnabled =>
+        VerificationStatus == "AYC" ||
+        VerificationStatus == "OI";
+
+        }
+    void OpenPopup()
+    {
+        
+        ShowUpdatePopup = true;
+    }
+    void ClosePopup()
+    {
+        ShowUpdatePopup = false;
     }
 }
 
