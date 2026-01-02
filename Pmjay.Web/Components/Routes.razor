@@ -1,6 +1,17 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
+﻿@inject Pmjay.Web.Data.LoginStateService LoginState
+<Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.EmptyLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
+    <NotFound>
+        <p style="padding:20px;">Page not found</p>
+    </NotFound>
 </Router>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await LoginState.LoadState(); 
+    }
+}

@@ -1,7 +1,11 @@
-﻿@page "/"
+﻿@page "/Home"
+@inject LoginStateService LoginState
+@inject NavigationManager NavigationManager
+@layout Layout.EmptyLayout
 @using Microsoft.JSInterop
 @using Pmjay.Api.Data
 @using Pmjay.Web.ApiClients
+@using Pmjay.Web.Data
 @inject HomeApiClient Api
 @inject IJSRuntime JS
 
@@ -30,6 +34,7 @@
         <!-- Right Logos + App Links -->
         <div class="flex-shrink-0 d-flex align-items-center right-logo">
             <!-- UP Seal Logo -->
+           
             <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Seal_of_Uttar_Pradesh.svg" class="gov-logo me-3" />
 
         </div>
@@ -491,6 +496,9 @@
         </div>
     </div>
 </div>
+<button class="logout-btn" @onclick="Logout">
+    Logout
+</button>
 <footer class="bg-light border-top text-center text-secondary small py-2 mt-3">
     © @DateTime.Now.Year Ayushman Bharat – Pradhan Mantri Jan Arogya Yojana (AB-PMJAY), Agra District |
     All rights reserved | Developed & Maintained by Office Of The Chief Medical Officer, Agra
@@ -600,6 +608,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoginState.LoadState();
+        if (!LoginState.IsLoggedIn)
+        {
+            NavigationManager.NavigateTo("/", true);
+            return;
+        }
         await LoadPage();
     }
     async Task OnRowsPerPageChanged()
@@ -848,13 +862,26 @@
         }
     void OpenPopup()
     {
-        
-        ShowUpdatePopup = true;
+
+    ShowUpdatePopup = true;
     }
     void ClosePopup()
     {
-        ShowUpdatePopup = false;
+    ShowUpdatePopup = false;
     }
+ async Task Logout()
+{
+    bool confirmLogout = await JS.InvokeAsync<bool>(
+        "confirm",
+        "Are you sure you want to logout?"
+    );
+
+    if (confirmLogout)
+    {
+        await LoginState.Logout();
+        NavigationManager.NavigateTo("/", true);
+    }
+}
 }
 
 <script>

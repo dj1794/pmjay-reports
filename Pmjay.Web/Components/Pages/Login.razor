@@ -1,0 +1,92 @@
+﻿@page "/"
+@using Pmjay.Web.Data
+@inject LoginStateService LoginState
+@layout Layout.EmptyLayout
+@inject NavigationManager NavigationManager
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <!-- Branding Panel -->
+        <div class="login-brand">
+            <img src="PMJAYl.png" class="gov-logo" />
+            <h2>AB-PMJAY Portal</h2>
+            <p>Agra, Uttar Pradesh</p>
+            <p>Secure Verification System</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="login-form">
+            <h3>User Login</h3>
+            <p class="subtitle">Enter your credentials to continue</p>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text"
+                       placeholder="Enter username"
+                       @bind="Username" />
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+
+                <div class="password-wrapper">
+                    <input type="@PasswordType"
+                           placeholder="Enter password"
+                           @bind="Password" />
+
+                    <button type="button"
+                            class="toggle-password"
+                            @onclick="TogglePassword">
+                        @(ShowPassword ? "🙈" : "👁️")
+                    </button>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <div class="error-message">@ErrorMessage</div>
+            }
+
+            <button class="login-btn" @onclick="OnLogin">
+                Login
+            </button>
+
+            <div class="footer-text">
+                © PMJAY
+            </div>
+        </div>
+
+    </div>
+</div>
+@code {
+
+    // Single user credentials
+    private const string SingleUsername = "admin";
+    private const string SinglePassword = "1234";
+
+    string Username;
+    string Password;
+    string ErrorMessage;
+
+    bool ShowPassword;
+
+    string PasswordType => ShowPassword ? "text" : "password";
+
+    void TogglePassword()
+    {
+        ShowPassword = !ShowPassword;
+    }
+
+    async Task OnLogin()
+    {
+        if (Username == "admin" && Password == "1234")
+        {
+            await LoginState.Login();
+            NavigationManager.NavigateTo("/Home", true);
+        }
+        else
+        {
+            ErrorMessage = "Invalid username or password";
+        }
+    }
+}
