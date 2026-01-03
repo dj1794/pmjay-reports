@@ -8,8 +8,9 @@ public class AgraDbContext : DbContext
  public AgraDbContext(DbContextOptions<AgraDbContext> options) : base(options)
  {
  }
+    public DbSet<VerificationDetail> VerificationDetails { get; set; }
 
- public DbSet<Agra1Dto> Agra1 { get; set; } = null!;
+    public DbSet<Agra1Dto> Agra1 { get; set; } = null!;
 
  protected override void OnModelCreating(ModelBuilder modelBuilder)
  {

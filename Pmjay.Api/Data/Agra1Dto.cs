@@ -18,3 +18,16 @@ public class Agra1Dto
  public string? card_status_family { get; set; }
  public string? memberbelongtozeropovery { get; set; }
 }
+
+public class VerificationDetail
+{
+    public long Id { get; set; }
+    public string MemberId { get; set; }
+    public string FamilyId { get; set; }
+    public int RemarkId { get; set; }
+    public int Status { get; set; }
+    public int CreatedBy { get; set; }
+    public DateTime? CreatedAt { get; set; }
+    public int? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}

@@ -170,5 +170,52 @@ public class AgraDataService
 
         return q;
     }
+    public async Task<VerificationDetail?> GetVerificationAsync(string memberId)
+    {
+        return await _db.VerificationDetails
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.MemberId == memberId);
+    }
+    public async Task<List<VerificationDetail>> GetVerificationsByFamilyAsync(string familyId)
+    {
+        return await _db.VerificationDetails
+            .AsNoTracking()
+            .Where(x => x.FamilyId == familyId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync();
+    }
+    public async Task<VerificationDetail> UpsertVerificationAsync(
+    VerificationDetailRequestDto dto,
+    int userId)
+    {
+        var existing = await _db.VerificationDetails
+            .FirstOrDefaultAsync(x => x.MemberId == dto.MemberId);
+
+        if (existing == null)
+        {
+            existing = new VerificationDetail
+            {
+                MemberId = dto.MemberId,
+                FamilyId = dto.FamilyId,
+                RemarkId = dto.RemarkId,
+                Status = dto.Status,
+                CreatedBy = userId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _db.VerificationDetails.Add(existing);
+        }
+        else
+        {
+            existing.RemarkId = dto.RemarkId;
+            existing.Status = dto.Status;
+            existing.UpdatedBy = userId;
+            existing.UpdatedAt = DateTime.UtcNow;
+        }
+
+        await _db.SaveChangesAsync();
+        return existing;
+    }
+
 
 }
