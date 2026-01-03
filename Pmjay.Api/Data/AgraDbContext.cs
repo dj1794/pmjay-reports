@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 
 namespace Pmjay.Api.Data;
@@ -11,8 +12,10 @@ public class AgraDbContext : DbContext
     public DbSet<VerificationDetail> VerificationDetails { get; set; }
 
     public DbSet<Agra1Dto> Agra1 { get; set; } = null!;
+    public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
 
- protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
  {
  base.OnModelCreating(modelBuilder);
 

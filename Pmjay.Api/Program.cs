@@ -1,54 +1,86 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Pmjay.Api.Data;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-IConfiguration configuration = new ConfigurationBuilder()
-      .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-      .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true, reloadOnChange: true)
-      .AddEnvironmentVariables()
-      .AddCommandLine(args)
-      .Build();
-// Add services to the container.
+
+// ==============================
+// CORS
+// ==============================
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowOrigin",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
+    options.AddPolicy("AllowOrigin", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
 });
-// Add services to the container.
 
+// ==============================
+// CONTROLLERS
+// ==============================
 builder.Services.AddControllers();
+
+// ==============================
+// DB CONTEXT
+// ==============================
+var conn = builder.Configuration.GetConnectionString("Default");
+if (string.IsNullOrEmpty(conn))
+{
+    throw new InvalidOperationException(
+        "Database connection string not configured. Set 'ConnectionStrings:Default'.");
+}
+
+builder.Services.AddDbContext<AgraDbContext>(options =>
+    options.UseSqlServer(conn));
+
 builder.Services.AddScoped<AgraDataService>();
-// Configure DbContext
-var conn = configuration.GetConnectionString("Default");
-if (!string.IsNullOrEmpty(conn))
+
+// ==============================
+// JWT AUTHENTICATION  ??????
+// ==============================
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
 {
-    builder.Services.AddDbContext<AgraDbContext>(options => options.UseSqlServer(conn));
-    builder.Services.AddScoped<AgraDataService>();
-}
-else
-{
-    // Fail fast with clear message so DI doesn't produce ambiguous errors later
-    throw new InvalidOperationException("Database connection string not configured. Set 'ConnectionStrings:Default' in appsettings or the 'DB_CONNECTION' environment variable.");
-}
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+        )
+    };
+});
+
+builder.Services.AddAuthorization();
+
+// ==============================
+// SWAGGER
+// ==============================
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ==============================
+// PIPELINE ORDER (IMPORTANT)
+// ==============================
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("AllowOrigin");
 app.UseHttpsRedirection();
-
+app.UseCors("AllowOrigin");
+app.UseAuthentication();   // ?? MUST COME FIRST
 app.UseAuthorization();
-
 app.MapControllers();
-
+Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("1234"));
 app.Run();

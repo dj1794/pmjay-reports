@@ -1,34 +1,61 @@
-﻿namespace Pmjay.Web.Data
+﻿using Microsoft.JSInterop;
+using Pmjay.Web.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+
+
+public class LoginStateService
 {
-    using Microsoft.JSInterop;
+    private readonly ApiAuthenticationStateProvider _authProvider;
+    private readonly IJSRuntime _js;
 
-    public class LoginStateService
+    public LoginResponse? CurrentUser { get; private set; }
+    public bool IsAuthenticated { get; private set; }
+
+    public LoginStateService(
+        ApiAuthenticationStateProvider authProvider,
+        IJSRuntime js)
     {
-        private readonly IJSRuntime _js;
+        _authProvider = authProvider;
+        _js = js;
+    }
 
-        public bool IsLoggedIn { get; private set; }
+    public async Task SetLogin(LoginResponse user)
+    {
+        CurrentUser = user;
+        IsAuthenticated = true;
 
-        public LoginStateService(IJSRuntime js)
+        await _authProvider.MarkUserAsAuthenticated(user.AccessToken);
+    }
+
+    // 🔑 RESTORE FROM JWT
+    public async Task LoadState()
+    {
+        var token = await _js.InvokeAsync<string>("localStorage.getItem", "token");
+
+        if (string.IsNullOrWhiteSpace(token))
+            return;
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwt = handler.ReadJwtToken(token);
+
+        CurrentUser = new LoginResponse
         {
-            _js = js;
-        }
+            UserId = int.Parse(jwt.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value),
+            FullName = jwt.Claims.First(x => x.Type == ClaimTypes.Name).Value,
+            RoleName = jwt.Claims.First(x => x.Type == ClaimTypes.Role).Value,
+            IsAuthenticated = true,
+            AccessToken = token
+        };
 
-        public async Task Login()
-        {
-            IsLoggedIn = true;
-            await _js.InvokeVoidAsync("localStorage.setItem", "isLoggedIn", "true");
-        }
+        IsAuthenticated = true;
+    }
 
-        public async Task LoadState()
-        {
-            var value = await _js.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-            IsLoggedIn = value == "true";
-        }
+    public async Task Logout()
+    {
+        CurrentUser = null;
+        IsAuthenticated = false;
 
-        public async Task Logout()
-        {
-            IsLoggedIn = false;
-            await _js.InvokeVoidAsync("localStorage.removeItem", "isLoggedIn");
-        }
+        await _authProvider.Logout();
     }
 }

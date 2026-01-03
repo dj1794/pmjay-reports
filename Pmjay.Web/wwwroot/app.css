@@ -90,10 +90,9 @@ h1:focus {
     color: #6c757d;
     text-align: center;
 }
-
 /* Spacer for fixed header */
 .pmjay-header-spacer {
-    height: 130px; /* matches default header height */
+    height: 95px!important; /* matches default header height */
 }
 
 /* ============================ */
@@ -118,7 +117,7 @@ h1:focus {
     }
 
     .pmjay-header-spacer {
-        height: 130px; /* header height remains consistent */
+        height: 110px!important; /* header height remains consistent */
     }
 }
 
@@ -146,7 +145,7 @@ h1:focus {
     }
 
     .pmjay-header-spacer {
-        height: 150px; /* matches mobile header height */
+        height: 180px!important; /* matches mobile header height */
     }
 }
 
@@ -937,3 +936,15 @@ input {
     font-weight: 600;
     color: #222;
 }
+
+.user-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 10px; /* spacing from content below */
+    max-width: 100%;
+    flex-wrap: nowrap;
+}
+
+    .user-info span {
+        white-space: nowrap;
+    }

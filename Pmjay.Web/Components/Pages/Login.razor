@@ -1,8 +1,11 @@
 ﻿@page "/"
-@using Pmjay.Web.Data
-@inject LoginStateService LoginState
+@attribute [AllowAnonymous]
 @layout Layout.EmptyLayout
+@using Microsoft.AspNetCore.Authorization
+@using Pmjay.Web.Data
+@inject AuthApiService AuthService
 @inject NavigationManager NavigationManager
+@inject LoginStateService LoginState
 <div class="login-wrapper">
     <div class="login-card">
 
@@ -19,37 +22,43 @@
             <h3>User Login</h3>
             <p class="subtitle">Enter your credentials to continue</p>
 
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text"
-                       placeholder="Enter username"
-                       @bind="Username" />
-            </div>
+            <EditForm Model="@loginModel" OnValidSubmit="OnLogin">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-            <div class="form-group">
-                <label>Password</label>
-
-                <div class="password-wrapper">
-                    <input type="@PasswordType"
-                           placeholder="Enter password"
-                           @bind="Password" />
-
-                    <button type="button"
-                            class="toggle-password"
-                            @onclick="TogglePassword">
-                        @(ShowPassword ? "🙈" : "👁️")
-                    </button>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input class="form-control"
+                           placeholder="Enter username"
+                           @bind="loginModel.UserName" />
                 </div>
-            </div>
 
-            @if (!string.IsNullOrEmpty(ErrorMessage))
-            {
-                <div class="error-message">@ErrorMessage</div>
-            }
+                <div class="form-group">
+                    <label>Password</label>
 
-            <button class="login-btn" @onclick="OnLogin">
-                Login
-            </button>
+                    <div class="password-wrapper">
+                        <input class="form-control"
+                               type="@PasswordType"
+                               placeholder="Enter password"
+                               @bind="loginModel.Password" />
+
+                        <button type="button"
+                                class="toggle-password"
+                                @onclick="TogglePassword">
+                            @(ShowPassword ? "🙈" : "👁️")
+                        </button>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div class="error-message">@ErrorMessage</div>
+                }
+
+                <button class="login-btn" type="submit" disabled="@IsLoading">
+                    @(IsLoading ? "Logging in..." : "Login")
+                </button>
+            </EditForm>
 
             <div class="footer-text">
                 © PMJAY
@@ -58,17 +67,14 @@
 
     </div>
 </div>
+
 @code {
 
-    // Single user credentials
-    private const string SingleUsername = "admin";
-    private const string SinglePassword = "1234";
+    LoginRequest loginModel = new();
 
-    string Username;
-    string Password;
-    string ErrorMessage;
-
+    string? ErrorMessage;
     bool ShowPassword;
+    bool IsLoading;
 
     string PasswordType => ShowPassword ? "text" : "password";
 
@@ -79,14 +85,27 @@
 
     async Task OnLogin()
     {
-        if (Username == "admin" && Password == "1234")
-        {
-            await LoginState.Login();
-            NavigationManager.NavigateTo("/Home", true);
-        }
-        else
+        
+        ErrorMessage = null;
+        IsLoading = true;
+
+        var result = await AuthService.Login(loginModel);
+
+        IsLoading = false;
+
+        if (result == null || !result.IsAuthenticated)
         {
             ErrorMessage = "Invalid username or password";
+            return;
         }
+
+        // Save login + token
+        await LoginState.SetLogin(result);
+
+        // Role based redirect
+        if (result.RoleName == "Admin")
+            NavigationManager.NavigateTo("/home", true);
+        else
+            NavigationManager.NavigateTo("/", true);
     }
 }

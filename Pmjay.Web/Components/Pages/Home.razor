@@ -1,6 +1,8 @@
 ﻿@page "/Home"
-@inject LoginStateService LoginState
+[Authorize(Roles="Admin")]
 @inject NavigationManager NavigationManager
+@inject ApiAuthenticationStateProvider ApiAuthenticationStateProvider
+@inject LoginStateService LoginState
 @layout Layout.EmptyLayout
 @using Microsoft.JSInterop
 @using Pmjay.Api.Data
@@ -34,15 +36,24 @@
         <!-- Right Logos + App Links -->
         <div class="flex-shrink-0 d-flex align-items-center right-logo">
             <!-- UP Seal Logo -->
-           
+
             <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Seal_of_Uttar_Pradesh.svg" class="gov-logo me-3" />
 
         </div>
     </div>
-
     <!-- Spacer for fixed header -->
     <div class="pmjay-header-spacer"></div>
-
+    @if (LoginState.IsAuthenticated && LoginState.CurrentUser != null)
+    {
+        <div class="user-info d-flex justify-content-end align-items-center p-2 pe-4 shadow-sm">
+            <span class="fw-semibold me-2">
+                👤 @LoginState.CurrentUser.FullName
+            </span>
+            <button class="btn btn-sm btn-outline-danger" @onclick="Logout">
+                Logout
+            </button>
+        </div>
+    }
     <!-- ================= FILTER HEADER ================= -->
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="d-flex align-items-center">
@@ -290,12 +301,14 @@
                             </label>
                             <select class="form-select" @bind="VerificationStatus">
                                 <option value="">-- Select --</option>
-                                <option value="AYC">Already Have Ayushman Card</option>
-                                <option value="FM">Family Migrated</option>
-                                <option value="NM">Name Mismatch</option>
-                                <option value="FNF">Family Not Found</option>
-                                <option value="Applied">Applied</option>
-                                <option value="OI">Other Issue</option>
+                                            <option value="AYC">Card Available (Other Source Data)</option>
+                                            <option value="FM">Family Migrated</option>
+                                            <option value="NM">Name Mismatch</option>
+                                            <option value="FNF">Family Not Found</option>
+                                            <option value="MAD">Marriage to Another District</option>
+                                            <option value="APL">KYC Done, Card is Pending</option>
+                                            <option value="DTH">Death</option>
+                                            <option value="OI">Other Issue</option>
                             </select>
                         </div>
 
@@ -306,7 +319,7 @@
                             </label>
                             <input type="text"
                                    class="form-control"
-                                   placeholder="Enter Remark or PMJAY ID"
+                                   placeholder="Enter Remark or PMJAY ID Or Family ID (Other Source) "
                                    @bind="RemarkOrPmjayId"
                                    disabled="@(!IsRemarkEnabled)"
                                                style="max-width:300px;" />
@@ -509,9 +522,6 @@
         </div>
     </div>
 </div>
-<button class="logout-btn" @onclick="Logout">
-    Logout
-</button>
 <footer class="bg-light border-top text-center text-secondary small py-2 mt-3">
     © @DateTime.Now.Year Ayushman Bharat – Pradhan Mantri Jan Arogya Yojana (AB-PMJAY), Agra District |
     All rights reserved | Developed & Maintained by Office Of The Chief Medical Officer, Agra
@@ -621,12 +631,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoginState.LoadState();
-        if (!LoginState.IsLoggedIn)
-        {
-            NavigationManager.NavigateTo("/", true);
-            return;
-        }
         await LoadPage();
     }
     async Task OnRowsPerPageChanged()
@@ -899,7 +903,7 @@ void SaveRecord()
     // Save logic here
     ShowUpdatePopup = false;
 }
- async Task Logout()
+   async Task Logout()
 {
     bool confirmLogout = await JS.InvokeAsync<bool>(
         "confirm",
@@ -908,8 +912,9 @@ void SaveRecord()
 
     if (confirmLogout)
     {
-        await LoginState.Logout();
-        NavigationManager.NavigateTo("/", true);
+
+            await LoginState.Logout();
+            NavigationManager.NavigateTo("/", true);
     }
 }
 }
