@@ -56,11 +56,11 @@ public class AuthController : ControllerBase
     {
         if (user.Role == null)
             throw new Exception("ROLE IS NULL");
-        var claims = new[]
-        {
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Name, user.FullName),
-        new Claim(ClaimTypes.Role, user.Role.RoleName)
+        var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+    new Claim(ClaimTypes.Name, user.FullName),
+    new Claim("role", user.Role.RoleName)   // 🔑 IMPORTANT
     };
 
         var key = new SymmetricSecurityKey(
