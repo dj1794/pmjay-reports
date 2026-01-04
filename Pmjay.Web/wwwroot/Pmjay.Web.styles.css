@@ -1,0 +1,7 @@
+/* Placeholder stylesheet to satisfy runtime static file reference
+   This file avoids 404 errors when the app references "Pmjay.Web.styles.css".
+   Add project-wide generated styles here if your build process produces them.
+*/
+
+/* Import existing app styles for convenience */
+@import url("/app.css");

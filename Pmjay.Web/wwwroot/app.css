@@ -92,7 +92,7 @@ h1:focus {
 }
 /* Spacer for fixed header */
 .pmjay-header-spacer {
-    height: 95px!important; /* matches default header height */
+    height: 120px!important; /* matches default header height */
 }
 
 /* ============================ */
@@ -941,7 +941,7 @@ input {
     background-color: #f8f9fa;
     border-radius: 8px;
     margin-bottom: 10px; /* spacing from content below */
-    max-width: 100%;
+    width: 100%;
     flex-wrap: nowrap;
 }
 
