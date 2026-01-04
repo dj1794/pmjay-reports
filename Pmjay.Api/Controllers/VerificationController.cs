@@ -8,10 +8,12 @@ namespace Pmjay.Api.Controllers
     public class VerificationController : ControllerBase
     {
         private readonly AgraDataService _service;
+        private readonly ICurrentUserService _currentUserService;
 
-        public VerificationController(AgraDataService service)
+        public VerificationController(AgraDataService service, ICurrentUserService currentUserService)
         {
             _service = service;
+            _currentUserService = currentUserService;
         }
         [HttpGet("member/{memberId}")]
         public async Task<ActionResult<VerificationDetailDto>> GetByMember(string memberId)
@@ -55,15 +57,11 @@ namespace Pmjay.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            int userId = 1; // TODO: replace with logged-in user
+            int userId = _currentUserService.UserId; // TODO: replace with logged-in user
 
             var result = await _service.UpsertVerificationAsync(dto, userId);
 
-            return Ok(new
-            {
-                result.Id,
-                Message = "Verification saved successfully"
-            });
+            return Ok(result);
         }
 
     }

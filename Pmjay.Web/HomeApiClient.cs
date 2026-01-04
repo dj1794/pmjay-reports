@@ -1,4 +1,5 @@
 ﻿using Pmjay.Api.Data;
+using Pmjay.Web.Data;
 using System.Net.Http.Json;
 
 namespace Pmjay.Web.ApiClients;
@@ -50,4 +51,14 @@ public class HomeApiClient
         return await _http.GetFromJsonAsync<List<Dictionary<string, object?>>>(url)
                ?? new();
     }
+    public async Task<VerificationDetailRequestDto> SaveVerificationAsync(VerificationDetailRequestDto verificationDetailRequest)
+    {
+        var response = await _http.PostAsJsonAsync("api/verification/Upsert", verificationDetailRequest);
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        return await response.Content.ReadFromJsonAsync<VerificationDetailRequestDto>();
+    }
+
 }

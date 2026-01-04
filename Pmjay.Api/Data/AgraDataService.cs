@@ -1,7 +1,23 @@
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using static Pmjay.Api.Data.AgraDataService;
 
 namespace Pmjay.Api.Data;
 
+public class CurrentUserService : ICurrentUserService
+{
+    public int UserId { get; }
+
+    public CurrentUserService(IHttpContextAccessor httpContextAccessor)
+    {
+        var userId = httpContextAccessor.HttpContext?
+            .User?
+            .FindFirst(ClaimTypes.NameIdentifier)?
+            .Value;
+
+        UserId = string.IsNullOrEmpty(userId) ? 0 : int.Parse(userId);
+    }
+}
 public class AgraDataService
 {
     private readonly AgraDbContext _db;
@@ -10,7 +26,6 @@ public class AgraDataService
     {
         _db = db ?? throw new ArgumentNullException(nameof(db));
     }
-
     public async Task<int> GetTotalAsync()
     {
         return await _db.Agra1.CountAsync();

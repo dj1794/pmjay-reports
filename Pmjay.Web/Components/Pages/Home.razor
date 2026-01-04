@@ -68,100 +68,100 @@
             }
         </div>
 
-       <button class="btn btn-sm btn-outline-primary"
-        @onclick="ToggleFilters">
-    @(ShowFilters ? "Hide Filters" : "Show Filters")
-</button>
+        <button class="btn btn-sm btn-outline-primary"
+                @onclick="ToggleFilters">
+            @(ShowFilters ? "Hide Filters" : "Show Filters")
+        </button>
     </div>
     @if (ShowFilters)
-{
-    <!-- ================= FILTER PANEL ================= -->
-    <div id="filtersCollapse" class="collapse show">
-        <div class="card pmjay-filter-card shadow-sm mb-3">
-            <div class="card-body">
-                <div class="row g-3 align-items-end">
+    {
+        <!-- ================= FILTER PANEL ================= -->
+        <div id="filtersCollapse" class="collapse show">
+            <div class="card pmjay-filter-card shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="row g-3 align-items-end">
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Search</label>
-                        <input class="form-control pmjay-input"
-                               @bind="Search"
-                               placeholder="Search by name or family ID" />
-                    </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Search</label>
+                            <input class="form-control pmjay-input"
+                                   @bind="Search"
+                                   placeholder="Search by name or family ID" />
+                        </div>
 
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Block / ULB</label>
-                        <select class="form-select pmjay-input" @bind="Block">
-                            <option value="">-- Select Block --</option>
-                            @foreach (var b in Blocks)
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Block / ULB</label>
+                            <select class="form-select pmjay-input" @bind="Block">
+                                <option value="">-- Select Block --</option>
+                                @foreach (var b in Blocks)
+                                {
+                                    <option value="@b">@b</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Village / Mohalla (ULB)</label>
+                            <input class="form-control pmjay-input"
+                                   placeholder="Type village name"
+                                   @bind="Village"
+                                   @bind:event="oninput"
+                                   disabled="@string.IsNullOrWhiteSpace(Block)" />
+
+                            @if (!string.IsNullOrWhiteSpace(Village) && Village.Length < 3)
                             {
-                                <option value="@b">@b</option>
+                                <small class="text-danger">Minimum 3 characters required</small>
                             }
-                        </select>
-                    </div>
+                        </div>
 
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Village / Mohalla (ULB)</label>
-                        <input class="form-control pmjay-input"
-                               placeholder="Type village name"
-                               @bind="Village"
-                               @bind:event="oninput"
-                               disabled="@string.IsNullOrWhiteSpace(Block)" />
-
-                        @if (!string.IsNullOrWhiteSpace(Village) && Village.Length < 3)
-                        {
-                            <small class="text-danger">Minimum 3 characters required</small>
-                        }
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Source Type</label>
-                        <select class="form-select pmjay-input" @bind="Source">
-                            <option value="">All</option>
-                            <option value="TPHH">TPHH</option>
-                            <option value="MMJAA">MMJAA</option>
-                            <option value="STPHH">STPHH</option>
-                            <option value="BOCW">BOCW</option>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Source Type</label>
+                            <select class="form-select pmjay-input" @bind="Source">
+                                <option value="">All</option>
+                                <option value="TPHH">TPHH</option>
+                                <option value="MMJAA">MMJAA</option>
+                                <option value="STPHH">STPHH</option>
+                                <option value="BOCW">BOCW</option>
                                 <option value="ANTYODAY">ANTYODAY</option>
                                 <option value="ASHA">ASHA</option>
                                 <option value="AWH">AWH</option>
                                 <option value="AWW">AWW</option>
-                        </select>
-                    </div>
+                            </select>
+                        </div>
 
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Member Status</label>
-                        <select class="form-select pmjay-input" @bind="MemberStatus">
-                            <option value="">All</option>
-                            <option value="EKYC">Left Out Data</option>
-                            <option value="Approved">Approved</option>
-                            <option value="S">Applied</option>
-                            <option value="Disable">Disable</option>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Member Status</label>
+                            <select class="form-select pmjay-input" @bind="MemberStatus">
+                                <option value="">All</option>
+                                <option value="EKYC">Left Out Data</option>
+                                <option value="Approved">Approved</option>
+                                <option value="S">Applied</option>
+                                <option value="Disable">Disable</option>
                                 <option value="FVD">Field Verified Data</option>
-                        </select>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4 d-flex flex-column flex-md-row gap-2">
+                            <button class="btn btn-primary pmjay-btn w-100"
+                                    @onclick="ApplyFiltersClicked"
+                                    disabled="@IsApplyDisabled">
+                                Apply Filter
+                            </button>
+
+                            <button class="btn btn-outline-secondary pmjay-btn w-100"
+                                    @onclick="Reset">
+                                Reset
+                            </button>
+                        </div>
+
                     </div>
-
-                    <div class="col-12 col-md-4 d-flex flex-column flex-md-row gap-2">
-                        <button class="btn btn-primary pmjay-btn w-100"
-                                @onclick="ApplyFiltersClicked"
-                                disabled="@IsApplyDisabled">
-                            Apply Filter
-                        </button>
-
-                        <button class="btn btn-outline-secondary pmjay-btn w-100"
-                                @onclick="Reset">
-                            Reset
-                        </button>
-                    </div>
-
                 </div>
             </div>
         </div>
-    </div>
     }
- 
+
     <!-- ================= SUMMARY ================= -->
     <div class="row g-3 mb-3">
-     <div class="row g-3">
+        <div class="row g-3">
             <div class="row g-3">
                 <div class="col-md-3 col-sm-6">
                     <div class="stat-card gradient-blue">
@@ -211,25 +211,25 @@
                     </div>
                 </div>
             </div>
-</div>
+        </div>
     </div>
     <div class="d-flex justify-content-between align-items-center mb-2">
-    <div class="d-flex align-items-center gap-2">
-        <span class="small text-muted">Rows per page:</span>
-        <select class="form-select form-select-sm w-auto"
+        <div class="d-flex align-items-center gap-2">
+            <span class="small text-muted">Rows per page:</span>
+            <select class="form-select form-select-sm w-auto"
                     @bind="PageSize"
                     @bind:after="OnRowsPerPageChanged">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-        </select>
-    </div>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
 
-    <div class="small text-muted">
+        <div class="small text-muted">
             Showing page @CurrentPage of @TotalPages
+        </div>
     </div>
-</div>
     <!-- ================= TABLE ================= -->
     <div class="container-fluid px-2" id="printSection">
         <div class="card pmjay-table-card shadow-sm mb-3">
@@ -251,80 +251,81 @@
 
 
             @if (ShowUpdatePopup)
-{
-    <div class="modal fade show d-block"
-         tabindex="-1"
-         style="background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
+            {
+                <div class="modal fade show d-block"
+                     tabindex="-1"
+                     style="background-color: rgba(0,0,0,0.5);">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
 
-                <!-- Header -->
+                            <!-- Header -->
                             <div class="modal-header bg-primary text-white text-center">
-                    <h5 class="modal-title mb-0">
-                        Update Beneficiary Record
-                    </h5>
-                    <button type="button"
-                            class="btn-close btn-close-white"
-                            @onclick="ClosePopup">
-                    </button>
-                </div>
+                                <h5 class="modal-title mb-0">
+                                    Update Beneficiary Record
+                                </h5>
+                                <button type="button"
+                                        class="btn-close btn-close-white"
+                                        @onclick="ClosePopup">
+                                </button>
+                            </div>
 
-                <!-- Body -->
-                <div class="modal-body">
+                            <!-- Body -->
+                            <div class="modal-body">
 
-                    <!-- Beneficiary Info -->
-                    <div class="info-grid mb-3">
-                        <div class="info-item">
-                            <span class="info-label">Family ID</span>
-                            <span class="info-value">@FamilyId</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Beneficiary Name</span>
-                            <span class="info-value">@BeneficiaryName</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Guardian Name</span>
-                            <span class="info-value">@GuardianName</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Block</span>
-                            <span class="info-value">@BlockName</span>
-                        </div>
-                    </div>
+                                <!-- Beneficiary Info -->
+                                <div class="info-grid mb-3">
+                                    <div class="info-item">
+                                        <span class="info-label">Family ID</span>
+                                        <span class="info-value">@verificationDetail.FamilyId</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Beneficiary Name</span>
+                                        <span class="info-value">@BeneficiaryName</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Guardian Name</span>
+                                        <span class="info-value">@GuardianName</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Block</span>
+                                        <span class="info-value">@BlockName</span>
+                                    </div>
+                                </div>
 
-                    <hr />
+                                <hr />
 
-                    <!-- Form -->
-                    <div class="row g-3">
-                        <!-- Field Verification Dropdown -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">
-                                Field Verification Report
-                            </label>
-                            <select class="form-select" @bind="VerificationStatus">
-                                <option value="">-- Select --</option>
-                                            <option value="AYC">Card Available (Other Source Data)</option>
-                                            <option value="FM">Family Migrated</option>
-                                            <option value="NM">Name Mismatch</option>
-                                            <option value="FNF">Family Not Found</option>
-                                            <option value="MAD">Marriage to Another District</option>
-                                            <option value="APL">KYC Done, Card is Pending</option>
-                                            <option value="DTH">Death</option>
-                                            <option value="OI">Other Issue</option>
-                            </select>
-                        </div>
+                                <!-- Form -->
+                                <div class="row g-3">
+                                    <!-- Field Verification Dropdown -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">
+                                            Field Verification Report
+                                        </label>
+                                        <select class="form-select" @bind="VerificationStatus">
+                                            <option value="">-- Select --</option>
+                                            <option value="1">Card Available (Other Source Data)</option>
+                                            <option value="2">Family Migrated</option>
+                                            <option value="3">Name Mismatch</option>
+                                            <option value="4">Family Not Found</option>
+                                            <option value="5">Marriage to Another District</option>
+                                            <option value="6">KYC Done, Card is Pending</option>
+                                            <option value="7">Death</option>
+                                            <option value="8">Other Issue</option>
+                                        </select>
+                                    </div>
 
-                        <!-- Remark / PMJAY ID -->
+                                    <!-- Remark / PMJAY ID -->
                                     <div class="col-md-6 mb-2">
-                            <label class="form-label fw-semibold">
-                                Remark / PMJAY ID
-                            </label>
-                            <input type="text"
-                                   class="form-control"
-                                   placeholder="Enter Remark or PMJAY ID Or Family ID (Other Source) "
-                                   @bind="RemarkOrPmjayId"
-                                   disabled="@(!IsRemarkEnabled)"/>
-                        </div>
+                                        <label class="form-label fw-semibold">
+                                            Remark / PMJAY ID
+                                        </label>
+                                        <input type="text"
+                                               class="form-control"
+                                               placeholder="Enter Remark or PMJAY ID Or Family ID (Other Source) "
+                                               @bind="verificationDetail.Remarks
+"
+                                               disabled="@(!IsRemarkEnabled)" />
+                                    </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Report By</label>
                                         <input class="form-control"
@@ -337,19 +338,19 @@
                                             By submitting this report, you acknowledge that you are responsible for its contents. Any action arising from this report is your responsibility.
                                         </div>
                                     </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
+                                <button class="btn btn-primary" @onclick="SaveRecord">Save</button>
+                            </div>
+
+                        </div>
                     </div>
-
                 </div>
-
-                <!-- Footer -->
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
-                    <button class="btn btn-primary" @onclick="SaveRecord">Save</button>
-                </div>
-
-            </div>
-        </div>
-    </div>               
             }
 
             <div class="card-body table-responsive px-0">
@@ -362,13 +363,13 @@
                                     @(HeaderDisplayNames.ContainsKey(h) ? HeaderDisplayNames[h] : h)
                                 </th>
                             }
-                            @if(showVerifyButton)
+                            @if (showVerifyButton)
                             {
-                             <th class="text-center text-nowrap fw-semibold">
-                                Action
-                            </th>
+                                <th class="text-center text-nowrap fw-semibold">
+                                    Action
+                                </th>
                             }
-                           
+
                         </tr>
                     </thead>
                     <tbody>
@@ -399,16 +400,16 @@
                                             }
 
                                         </td>
-                                        
+
                                     }
-                                      @if(showVerifyButton)
+                                    @if (showVerifyButton)
                                     {
                                         <td class="text-center">
                                             <button class="btn btn-sm btn-primary"
-                                                @onclick="() => OpenPopup(r)">
-                                            Verify
-                                        </button>
-                                    </td>
+                                                    @onclick="() => OpenPopup(r)">
+                                                Verify
+                                            </button>
+                                        </td>
                                     }
                                 </tr>
                             }
@@ -436,36 +437,36 @@
         </div>
     </div>
 
-   
+
     <!-- ================= LOADER ================= -->
-   @if (IsLoading)
-{
-    <div class="loading-overlay">
-        <div class="loader-card text-center">
-            <div class="chakra-spin mb-3"></div>
+    @if (IsLoading)
+    {
+        <div class="loading-overlay">
+            <div class="loader-card text-center">
+                <div class="chakra-spin mb-3"></div>
 
-            <div class="fw-semibold text-primary fs-5">
-                कृपया प्रतीक्षा करें…
-            </div>
+                <div class="fw-semibold text-primary fs-5">
+                    कृपया प्रतीक्षा करें…
+                </div>
 
-            <div class="text-muted small mt-1">
-                आयुष्मान भारत (PMJAY) डेटा सुरक्षित रूप से लोड हो रहा है
-            </div>
+                <div class="text-muted small mt-1">
+                    आयुष्मान भारत (PMJAY) डेटा सुरक्षित रूप से लोड हो रहा है
+                </div>
 
-            <div class="progress mt-3" style="height:6px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated"
-                     style="width: 100%"></div>
-            </div>
+                <div class="progress mt-3" style="height:6px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                         style="width: 100%"></div>
+                </div>
 
-            <div class="text-muted small mt-2">
-                This may take a few seconds. Thank you for your patience.
+                <div class="text-muted small mt-2">
+                    This may take a few seconds. Thank you for your patience.
+                </div>
+                <div class="text-muted small mt-3">
+                    यह सरकारी डेटा है। कृपया दुरुपयोग न करें।
+                </div>
             </div>
-            <div class="text-muted small mt-3">
-    यह सरकारी डेटा है। कृपया दुरुपयोग न करें।
-</div>
         </div>
-    </div>
-}
+    }
 
 </div>
 <div class="gov-social-section mt-4">
@@ -760,13 +761,11 @@
         await LoadPage();
     }
 
-
-
     async Task ApplyFiltersClicked()
     {
         // diagnostic: set message and log to browser console
         LastAction = $"ApplyFiltersClicked invoked at {DateTime.UtcNow:O}";
-        Console.WriteLine(LastAction);      
+        Console.WriteLine(LastAction);
 
         CurrentPage = 1;
         await LoadPage();
@@ -781,32 +780,32 @@
         return found.Equals(default(KeyValuePair<string, object?>)) ? null : found.Value?.ToString();
     }
     MarkupString FormatValue(string header, object? value)
-{
-    if (header == "card_status_member")
     {
-        var text = value switch
+        if (header == "card_status_member")
         {
-            null => "KYC Needed",
-            "DO Ekyc" => "KYC Needed",
-            "S" => "Applied",
-            "Approved" => "Approved",
+            var text = value switch
+            {
+                null => "KYC Needed",
+                "DO Ekyc" => "KYC Needed",
+                "S" => "Applied",
+                "Approved" => "Approved",
                 "Disable" => "Disable",
-            _ => value?.ToString() ?? ""
-        };
+                _ => value?.ToString() ?? ""
+            };
 
-        var css = text switch
-        {
-            "Approved" => "badge bg-success",
-            "Applied" => "badge bg-warning text-dark",
+            var css = text switch
+            {
+                "Approved" => "badge bg-success",
+                "Applied" => "badge bg-warning text-dark",
                 "Disable" => "badge bg-danger",
-            _ => "badge bg-secondary"
-        };
+                _ => "badge bg-secondary"
+            };
 
-        return new MarkupString($"<span class='{css}'>{text}</span>");
+            return new MarkupString($"<span class='{css}'>{text}</span>");
+        }
+
+        return new MarkupString(value?.ToString() ?? "");
     }
-
-    return new MarkupString(value?.ToString() ?? "");
-}
     int ComputeTotalFamilies()
     {
         return DisplayRows.Select(r => GetValue(r, "src_family_id")).Where(s => !string.IsNullOrEmpty(s)).Distinct(StringComparer.OrdinalIgnoreCase).Count();
@@ -878,58 +877,58 @@
 
     }
     bool ShowUpdatePopup = false;
-string VerificationStatus=string.Empty;
-string RemarkOrPmjayId=string.Empty;
+    string VerificationStatus = string.Empty;
+    string RemarkOrPmjayId = string.Empty;
 
-// Beneficiary Info
-string FamilyId=string.Empty;
-string BeneficiaryName=string.Empty;
-string GuardianName=string.Empty;
-string BlockName=string.Empty;
+    // Beneficiary Info
+    string BeneficiaryName = string.Empty;
+    string GuardianName = string.Empty;
+    string BlockName = string.Empty;
 
-// Enable textbox only when needed
-bool IsRemarkEnabled =>
-    VerificationStatus == "AYC" ||
-    VerificationStatus == "OI";
-
-// Open modal
-void OpenPopup(Dictionary<string, object?> row)
-{
-    // Set info from selected row
-    FamilyId = GetValue(row, "src_family_id") ?? string.Empty;
-    BeneficiaryName = GetValue(row, "name") ?? string.Empty;
-    GuardianName = GetValue(row, "father_guardian_name") ?? string.Empty;
-    BlockName = GetValue(row, "blockname") ?? string.Empty;
-    VerificationStatus = string.Empty;
-    RemarkOrPmjayId = string.Empty;
-    ShowUpdatePopup = true;
-}
-// Close modal
-void ClosePopup()
-{
-    ShowUpdatePopup = false;
-}
-
-// Save record
-void SaveRecord()
-{
-    // Save logic here
-    ShowUpdatePopup = false;
-}
-   async Task Logout()
-{
-    bool confirmLogout = await JS.InvokeAsync<bool>(
-        "confirm",
-        "Are you sure you want to logout?"
-    );
-
-    if (confirmLogout)
+    // Enable textbox only when needed
+    bool IsRemarkEnabled =>
+        VerificationStatus == "AYC" ||
+        VerificationStatus == "OI";
+    VerificationDetailRequestDto verificationDetail = new VerificationDetailRequestDto();
+    // Open modal
+    void OpenPopup(Dictionary<string, object?> row)
     {
+        // Set info from selected row
+        verificationDetail.FamilyId = GetValue(row, "src_family_id") ?? string.Empty;
+        verificationDetail.MemberId = GetValue(row, "src_member_id") ?? string.Empty;
+        BeneficiaryName = GetValue(row, "name") ?? string.Empty;
+        GuardianName = GetValue(row, "father_guardian_name") ?? string.Empty;
+        BlockName = GetValue(row, "blockname") ?? string.Empty;
+        ShowUpdatePopup = true;
+    }
+    // Close modal
+    void ClosePopup()
+    {
+        ShowUpdatePopup = false;
+    }
+
+    // Save record
+    async Task SaveRecord()
+    {
+        // Save logic here
+        Console.WriteLine(verificationDetail);
+        await Api.SaveVerificationAsync(verificationDetail);
+        ShowUpdatePopup = false;
+    }
+    async Task Logout()
+    {
+        bool confirmLogout = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Are you sure you want to logout?"
+        );
+
+        if (confirmLogout)
+        {
 
             await LoginState.Logout();
             NavigationManager.NavigateTo("/", true);
+        }
     }
-}
 }
 
 <script>
