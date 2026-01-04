@@ -1,5 +1,5 @@
 ﻿@page "/Home"
-[Authorize(Roles = "Admin")]
+@attribute [Authorize(Roles = "Admin")]
 @inject NavigationManager NavigationManager
 @layout Layout.EmptyLayout
 @using Microsoft.AspNetCore.Authorization

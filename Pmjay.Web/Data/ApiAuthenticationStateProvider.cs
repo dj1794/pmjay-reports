@@ -26,16 +26,40 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider
         var handler = new JwtSecurityTokenHandler();
         var jwt = handler.ReadJwtToken(token);
 
+        // Normalize role and name claim types so Blazor's role checks work
+        var claims = jwt.Claims.Select(c =>
+        {
+            if (string.Equals(c.Type, "role", StringComparison.OrdinalIgnoreCase)
+                || c.Type?.EndsWith("/role", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                return new Claim(ClaimTypes.Role, c.Value);
+            }
+
+            if (string.Equals(c.Type, "name", StringComparison.OrdinalIgnoreCase))
+            {
+                return new Claim(ClaimTypes.Name, c.Value);
+            }
+
+            if (string.Equals(c.Type, "sub", StringComparison.OrdinalIgnoreCase))
+            {
+                return new Claim(ClaimTypes.NameIdentifier, c.Value);
+            }
+
+            return c;
+        }).ToList();
+
         var identity = new ClaimsIdentity(
-            jwt.Claims,
+            claims,
             "jwt",
-            ClaimTypes.Name,     // 🔥 IMPORTANT
-            ClaimTypes.Role      // 🔥 IMPORTANT
+            ClaimTypes.Name,
+            ClaimTypes.Role
         );
 
         var user = new ClaimsPrincipal(identity);
+
         return new AuthenticationState(user);
     }
+
 
     public async Task MarkUserAsAuthenticated(string token)
     {

@@ -60,7 +60,8 @@ public class AuthController : ControllerBase
 {
     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
     new Claim(ClaimTypes.Name, user.FullName),
-    new Claim("role", user.Role.RoleName)   // 🔑 IMPORTANT
+    // Use ClaimTypes.Role so Blazor's role checks find the claim
+    new Claim(ClaimTypes.Role, user.Role.RoleName)
     };
 
         var key = new SymmetricSecurityKey(

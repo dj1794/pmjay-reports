@@ -1,7 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Pmjay.Web.Shared
+@inject LoginStateService LoginState
 
 <CascadingAuthenticationState>
+    @* Ensure login state is loaded from localStorage on app startup *@
+    @code {
+        protected override async Task OnInitializedAsync()
+        {
+            await LoginState.LoadState();
+        }
+    }
+
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData">
