@@ -16,12 +16,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader());
 });
-
 // ==============================
 // CONTROLLERS
 // ==============================
 builder.Services.AddControllers();
-
 // ==============================
 // DB CONTEXT
 // ==============================
@@ -31,7 +29,6 @@ if (string.IsNullOrEmpty(conn))
     throw new InvalidOperationException(
         "Database connection string not configured. Set 'ConnectionStrings:Default'.");
 }
-
 builder.Services.AddDbContext<AgraDbContext>(options =>
     options.UseSqlServer(conn));
 
