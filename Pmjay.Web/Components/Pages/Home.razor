@@ -136,6 +136,7 @@
                             <option value="Approved">Approved</option>
                             <option value="S">Applied</option>
                             <option value="Disable">Disable</option>
+                                <option value="FVD">Field Verified Data</option>
                         </select>
                     </div>
 
@@ -314,7 +315,7 @@
                         </div>
 
                         <!-- Remark / PMJAY ID -->
-                        <div class="col-md-6">
+                                    <div class="col-md-6 mb-2">
                             <label class="form-label fw-semibold">
                                 Remark / PMJAY ID
                             </label>
@@ -322,9 +323,20 @@
                                    class="form-control"
                                    placeholder="Enter Remark or PMJAY ID Or Family ID (Other Source) "
                                    @bind="RemarkOrPmjayId"
-                                   disabled="@(!IsRemarkEnabled)"
-                                               style="max-width:300px;" />
+                                   disabled="@(!IsRemarkEnabled)"/>
                         </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Report By</label>
+                                        <input class="form-control"
+                                               value="@(LoginState.CurrentUser.FullName ?? "Unknown User")"
+                                               readonly />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label class="form-label text-danger">Disclaimer</label>
+                                        <div class="alert alert-warning p-2" style="font-size: 0.700rem;">
+                                            By submitting this report, you acknowledge that you are responsible for its contents. Any action arising from this report is your responsibility.
+                                        </div>
+                                    </div>
                     </div>
 
                 </div>
