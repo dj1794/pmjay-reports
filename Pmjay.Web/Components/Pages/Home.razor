@@ -1,10 +1,10 @@
 ﻿@page "/Home"
-@attribute [Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 @inject NavigationManager NavigationManager
-@inject ApiAuthenticationStateProvider ApiAuthenticationStateProvider
-@inject LoginStateService LoginState
 @layout Layout.EmptyLayout
 @using Microsoft.AspNetCore.Authorization
+@inject ApiAuthenticationStateProvider AuthStateProvider
+@inject LoginStateService LoginState
 @using Microsoft.JSInterop
 @using Pmjay.Api.Data
 @using Pmjay.Web.ApiClients

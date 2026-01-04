@@ -26,9 +26,14 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider
         var handler = new JwtSecurityTokenHandler();
         var jwt = handler.ReadJwtToken(token);
 
-        var identity = new ClaimsIdentity(jwt.Claims, "jwt");
-        var user = new ClaimsPrincipal(identity);
+        var identity = new ClaimsIdentity(
+            jwt.Claims,
+            "jwt",
+            ClaimTypes.Name,     // 🔥 IMPORTANT
+            ClaimTypes.Role      // 🔥 IMPORTANT
+        );
 
+        var user = new ClaimsPrincipal(identity);
         return new AuthenticationState(user);
     }
 

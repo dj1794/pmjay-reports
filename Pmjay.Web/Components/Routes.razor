@@ -4,22 +4,18 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
-
             <AuthorizeRouteView RouteData="@routeData">
                 <Authorizing>
-                    <p style="padding:20px;">Checking authentication…</p>
+                    <p>Authorizing…</p>
                 </Authorizing>
-
                 <NotAuthorized>
                     <RedirectToLogin />
                 </NotAuthorized>
             </AuthorizeRouteView>
-
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
 
         <NotFound>
-            <p style="padding:20px;">Page not found</p>
+            <p>Not found</p>
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
