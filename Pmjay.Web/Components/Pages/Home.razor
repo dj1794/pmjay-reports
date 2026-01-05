@@ -301,7 +301,7 @@
                                         <label class="form-label fw-semibold">
                                             Field Verification Report
                                         </label>
-                                        <select class="form-select" @bind="VerificationStatus">
+                                        <select class="form-select" @bind="verificationDetail.Status">
                                             <option value="">-- Select --</option>
                                             <option value="1">Card Available (Other Source Data)</option>
                                             <option value="2">Family Migrated</option>
@@ -911,7 +911,7 @@
     async Task SaveRecord()
     {
         // Save logic here
-        Console.WriteLine(verificationDetail);
+        Console.WriteLine(verificationDetail.Status);
         await Api.SaveVerificationAsync(verificationDetail);
         ShowUpdatePopup = false;
     }

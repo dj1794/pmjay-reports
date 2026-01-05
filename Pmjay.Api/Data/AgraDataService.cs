@@ -212,7 +212,7 @@ public class AgraDataService
             {
                 MemberId = dto.MemberId,
                 FamilyId = dto.FamilyId,
-                RemarkId = dto.RemarkId,
+                Remarks = dto.Remarks,
                 Status = dto.Status,
                 CreatedBy = userId,
                 CreatedAt = DateTime.UtcNow
@@ -222,7 +222,7 @@ public class AgraDataService
         }
         else
         {
-            existing.RemarkId = dto.RemarkId;
+            existing.Remarks = dto.Remarks;
             existing.Status = dto.Status;
             existing.UpdatedBy = userId;
             existing.UpdatedAt = DateTime.UtcNow;

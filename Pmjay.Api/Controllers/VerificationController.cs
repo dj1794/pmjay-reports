@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pmjay.Api.Data;
 
 namespace Pmjay.Api.Controllers
 {
     [ApiController]
     [Route("api/verification")]
+    [Authorize]
     public class VerificationController : ControllerBase
     {
         private readonly AgraDataService _service;
@@ -28,7 +30,7 @@ namespace Pmjay.Api.Controllers
                 Id = data.Id,
                 MemberId = data.MemberId,
                 FamilyId = data.FamilyId,
-                RemarkId = data.RemarkId,
+                Remarks = data.Remarks,
                 Status = data.Status,
                 CreatedAt = data.CreatedAt,
                 UpdatedAt = data.UpdatedAt
@@ -44,7 +46,7 @@ namespace Pmjay.Api.Controllers
                 Id = x.Id,
                 MemberId = x.MemberId,
                 FamilyId = x.FamilyId,
-                RemarkId = x.RemarkId,
+                Remarks = x.Remarks,
                 Status = x.Status,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt

@@ -63,7 +63,8 @@ builder.Services.AddAuthorization();
 // ==============================
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 var app = builder.Build();
 
 // ==============================
