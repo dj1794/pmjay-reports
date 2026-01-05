@@ -11,16 +11,18 @@ public class AgraDbContext : DbContext
  }
     public DbSet<VerificationDetail> VerificationDetails { get; set; }
 
+    public DbSet<BlockDashboardDto> BlockDashboard { get; set; }
     public DbSet<Agra1Dto> Agra1 { get; set; } = null!;
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
  {
- base.OnModelCreating(modelBuilder);
-
- // Keyless mapping for the Agra1 table and explicit column selection
- modelBuilder.Entity<Agra1Dto>(eb =>
+        
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<BlockDashboardDto>().HasNoKey();
+        // Keyless mapping for the Agra1 table and explicit column selection
+        modelBuilder.Entity<Agra1Dto>(eb =>
  {
  eb.HasNoKey();
  eb.ToTable("Agra1");

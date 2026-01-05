@@ -34,6 +34,8 @@ builder.Services.AddDbContext<AgraDbContext>(options =>
     options.UseSqlServer(conn));
 
 builder.Services.AddScoped<AgraDataService>();
+builder.Services.AddScoped<DashboardService>();
+builder.Services.AddMemoryCache();
 
 // ==============================
 // JWT AUTHENTICATION  ??????
